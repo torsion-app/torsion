@@ -1,4 +1,4 @@
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
@@ -6,30 +6,20 @@ import { RE_KEY } from '@env';
 
 export default function TeamSelectScreen() {
     const [names, setNames] = useState([]);
+    const [ids, setIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        get_competitions(setNames, setLoading, setError);
-    }, []);
-
-    if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text>Error: {error.message}</Text>
-      </View>
-    );
-  }
-
+    // high stakes = 190 spin up = 173
+    // 13765X = 111877
+    const team_number = "111877"; //
+    const season = "173"; //
+    const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_number+"&season%5B%5D="+season+"&myEvents=false";
+    call_api(setNames, setIds, setLoading, setError, loading, error, comp_url);
     const Competitions = names.map(name => ({ title: name }));
+    const event_ids = ids;
+
+    const team_url = "";
 
     return (
         <DefaultView
@@ -46,23 +36,41 @@ export default function TeamSelectScreen() {
     );
 }
 
-async function get_competitions(setNames, setLoading, setError) {
-    // high stakes = 190 spin up = 173
-    // 13765X = 111877
-    const api_key = {RE_KEY};
-    const team_number = "111877"; //
-    const season = "173"; //
-    const request_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_number+"&season%5B%5D="+season+"&myEvents=false";
+function call_api(setNames, setIds, setLoading, setError, loading, error, url) {
+    useEffect(() => {
+        get_competitions(setNames, setIds, setLoading, setError, url);
+    }, []);
+
+    if (loading) {
+        return (
+            <View>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View>
+                <Text>Error: {error.message}</Text>
+            </View>
+        );
+    }
+}
+
+async function get_competitions(setNames, setIds, setLoading, setError, url) {
     const headers = {
-        'Authorization': `Bearer ${api_key}`,
+        'Authorization': `Bearer ${RE_KEY}`,
         'Content-Type': 'application/json'
     };
     try {
-        const reply = await fetch(request_url, {headers})
+        const reply = await fetch(url, {headers})
         if (!reply.ok) throw new Error("Error: " + reply.statusText);
         const result = await reply.json();
-        const competition_names = result.data.map(item => item.name);
-        setNames(competition_names);
+        const all_names = result.data.map(item => item.name);
+        setNames(all_names);
+        const all_ids = result.data.map(item => item.id);
+        setIds(all_ids);
     } catch (error) {
         setError(error);
     } finally {
