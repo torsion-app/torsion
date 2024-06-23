@@ -5,29 +5,44 @@ import DefaultView from "../components/DefaultView.js";
 import { RE_KEY } from '@env';
 
 export default function TeamSelectScreen() {
-    const [names, setNames] = useState([]);
-    const [ids, setIds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [comp_names, setCompNames] = useState([]);
+    const [comp_ids, setCompIds] = useState([]);
+    const [team_names, setTeamNames] = useState([]);
+    const [team_ids, setTeamIds] = useState([]);
+
+    const [selected_comp, setSelectedComp] = useState(null);
+    const [team_name_dd, setTeamNameDd] = useState(null);
 
     // high stakes = 190 spin up = 173
     // 13765X = 111877
     const team_number = "111877"; //
     const season = "173"; //
     const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_number+"&season%5B%5D="+season+"&myEvents=false";
-    call_api(setNames, setIds, setLoading, setError, loading, error, comp_url);
-    const Competitions = names.map(name => ({ title: name }));
-    const event_ids = ids;
+    call_api(setCompNames, setCompIds, setLoading, setError, loading, error, comp_url, []);
+    const Competitions = comp_names.map((name, index) => ({
+        title: name,
+        id: comp_ids[index],
+    }));
 
-    const team_url = "";
+    useEffect(() => {
+        const team_url = "https://www.robotevents.com/api/v2/teams?event%5B%5D="+selected_comp+"&myTeams=false";
+        call_api(setTeamNames, setTeamIds, setLoading, setError, loading, error, team_url, []);
+        setTeamNameDd(team_names.map((name, index) => ({
+            title: name,
+            id: team_ids[index],
+        })));
+    }, [selected_comp]);
 
     return (
         <DefaultView
             HeaderText = {"Select Competition and Team"}
             Content = {
                 <View style = {styles.scrollingSelectContainer}>
-                    <ScrollingSelect Data={Competitions} Placeholder="Select Competition"/>
-                    <ScrollingSelect Data={TeamNames} Placeholder="Select Team"/>
+                    <ScrollingSelect Data={Competitions} Placeholder="Select Competition" onSelect={setSelectedComp}/>
+                    <ScrollingSelect Data={team_name_dd} Placeholder="Select Team"/>
                 </View>
             }
             ButtonLink = {"Home"}
@@ -36,10 +51,10 @@ export default function TeamSelectScreen() {
     );
 }
 
-function call_api(setNames, setIds, setLoading, setError, loading, error, url) {
+function call_api(setNames, setIds, setLoading, setError, loading, error, url, render) {
     useEffect(() => {
-        get_competitions(setNames, setIds, setLoading, setError, url);
-    }, []);
+        get_api_data(setNames, setIds, setLoading, setError, url);
+    }, render);
 
     if (loading) {
         return (
@@ -58,7 +73,7 @@ function call_api(setNames, setIds, setLoading, setError, loading, error, url) {
     }
 }
 
-async function get_competitions(setNames, setIds, setLoading, setError, url) {
+async function get_api_data(setNames, setIds, setLoading, setError, url) {
     const headers = {
         'Authorization': `Bearer ${RE_KEY}`,
         'Content-Type': 'application/json'
@@ -77,23 +92,6 @@ async function get_competitions(setNames, setIds, setLoading, setError, url) {
         setLoading(false);
     }
 };
-
-const TeamNames = [
-    {title: "112123"},
-    {title: "112121"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-    {title: "112123"},
-];
 
 const styles = StyleSheet.create ({
     scrollingSelectContainer: {

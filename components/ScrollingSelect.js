@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { StyleSheet } from 'react-native';
 
-export default function ScrollingSelect ({Data, Placeholder}) {
+export default function ScrollingSelect ({Data, Placeholder, onSelect}) {
     const [selectedValue, setSelectedValue] = useState(null);
     return (
         <Dropdown
@@ -13,6 +13,7 @@ export default function ScrollingSelect ({Data, Placeholder}) {
             value={selectedValue}
             onChange={item => {
                 setSelectedValue(item.value);
+                if (onSelect) onSelect(item.value);
             }}
         />
     );
