@@ -31,7 +31,7 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
                     style={GlobalStyles.navButton}
                     containerStyle={GlobalStyles.buttonContainer}
                     title={ButtonText+""}
-                    onPress = { () =>
+                    onPress = {() =>
                         navigation.navigate({name: ButtonLink})
                     }
                 />

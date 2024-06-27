@@ -1,21 +1,16 @@
 import React, { } from 'react';
-import { Text, View, Button } from 'react-native';
-import GlobalStyles from '../styles/GlobalStyles.js';
-import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
+import DefaultView from '../components/DefaultView.js';
 
-export default function HomeScreen ({navigation}) {
+export default function HomeScreen() {
     return (
-        <View style={GlobalStyles.container}>
-            <Text style={GlobalStyles.headerText}>Home Screen</Text>
-            <Button
-                style={GlobalStyles.navButton}
-                containerStyle={GlobalStyles.buttonContainer}
-                title="Select Team"
-                onPress = { () =>
-                    navigation.navigate("Team Selection")
-                }
-            />
-            <StatusBar barStyle="auto" />
-        </View>
+        <DefaultView
+            HeaderText = {"Home Screen"}
+            Content = {
+                <View></View>
+            }
+            ButtonLink = {"Team Selection"}
+            ButtonText = {"Select Team"}
+        />
     );
 }

@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-import { Dropdown } from 'react-native-element-dropdown';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { StyleSheet } from 'react-native';
 
-export default function ScrollingSelect ({Data, Placeholder, onSelect}) {
-    const [selectedValue, setSelectedValue] = useState(null);
+export default function ScrollingSelect ({Data, Placeholder, selectedValue, onSelect, zindex}) {
+    const [Open, setOpen] = useState(false);
     return (
-        <Dropdown
+        <DropDownPicker
             style={styles.dropdown}
-            data={Data}
-            labelField="title"
+            items={Data}
+            open={Open}
+            setOpen={setOpen}
             placeholder={Placeholder}
             value={selectedValue}
-            onChange={item => {
-                setSelectedValue(item.value);
-                if (onSelect) onSelect(item.value);
-            }}
+            setValue={onSelect}
+            zIndex={zindex}
         />
     );
 }

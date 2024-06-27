@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export default GlobalStyles = StyleSheet.create({
     headerTextContainer: {
-        backgroundColor: '#d4d4d4',
+        backgroundColor: '#e6e6e6',
         alignItems: 'center',
         justifyContent: 'center',
     },
