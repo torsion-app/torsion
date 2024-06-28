@@ -26,7 +26,7 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
             <View style={ {flex: 1} }>
                 {Content}
             </View>
-            <View style={ {height: 50, backgroundColor: '#d4d4d4'} }>
+            <View style={ {height: 70, backgroundColor: '#d4d4d4'} }>
                 <Button
                     style={GlobalStyles.navButton}
                     containerStyle={GlobalStyles.buttonContainer}

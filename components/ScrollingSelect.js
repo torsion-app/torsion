@@ -14,6 +14,7 @@ export default function ScrollingSelect ({Data, Placeholder, selectedValue, onSe
             value={selectedValue}
             setValue={onSelect}
             zIndex={zindex}
+            itemKey="value"
         />
     );
 }
