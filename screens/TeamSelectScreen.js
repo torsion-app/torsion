@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, ActivityIndicator, Button } from "react-native";
+import { View, StyleSheet, Button } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
-import { RE_KEY } from '@env';
+import call_re_api from "../components/REApiCall.js";
 
 export default function TeamSelectScreen({navigation}) {
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ export default function TeamSelectScreen({navigation}) {
     const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_number+"&season%5B%5D="+season+"&myEvents=false";
 
     useEffect(() => {
-        call_api(setCompNames, setCompIds, setLoading, setError, loading, error, comp_url, 'name');
+        call_re_api(setCompNames, setCompIds, loading, setLoading, error, setError, comp_url, 'name');
     }, []);
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export default function TeamSelectScreen({navigation}) {
     useEffect(() => {
         if (selected_comp) {
             const team_url = "https://www.robotevents.com/api/v2/teams?event%5B%5D="+selected_comp+"&myTeams=false&per_page=250";
-            call_api(setTeamNames, setTeamIds, setLoading, setError, loading, error, team_url, 'number');
+            call_re_api(setTeamNames, setTeamIds, loading, setLoading, error, setError, team_url, 'number');
         }
     }, [selected_comp]);
 
@@ -53,7 +53,7 @@ export default function TeamSelectScreen({navigation}) {
     useEffect(() => {
         if (selected_team) {
             const url = 'https://www.robotevents.com/api/v2/teams/'+selected_team;
-            call_api(setSelectedTeamNum, null, setLoading, setError, loading, error, url, 'single number');
+            call_re_api(setSelectedTeamNum, null, loading, setLoading, error, setError, url, 'single number');
         }
     }, [selected_team]);
 
@@ -72,7 +72,7 @@ export default function TeamSelectScreen({navigation}) {
                             style={GlobalStyles.navButton}
                             containerStyle={GlobalStyles.buttonContainer}
                                 onPress = {() =>
-                                navigation.navigate("Team Info", {selected_team, selected_team_num})
+                                navigation.navigate("Team Info", {selected_team, selected_team_num, selected_comp})
                             }
                         />
                     )}
@@ -83,7 +83,6 @@ export default function TeamSelectScreen({navigation}) {
         />
     );
 }
-
 
 const styles = StyleSheet.create ({
     scrollingSelectContainer: {
