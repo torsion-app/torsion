@@ -13,13 +13,14 @@ const firebaseConfig = {
 const firebase_app = initializeApp(firebaseConfig);
 const firebase_auth = getAuth(firebase_app);
 
-export default function authenticate_firebase(email, pwd) {
-    signInWithEmailAndPassword(firebase_auth, email, pwd)
+export default async function authenticate_firebase(email, pwd) {
+    await signInWithEmailAndPassword(firebase_auth, email, pwd)
         .then((userCredential) => {
-            const uid = userCredential.user;
+            return userCredential.user;
         })
         .catch((error) => {
             const error_code = error.code;
             const error_msg = error.message;
+            return false;
         });
 }

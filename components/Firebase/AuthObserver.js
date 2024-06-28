@@ -1,4 +1,9 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const auth = getAuth();
-onAuthStateChanged(auth, (user) => {
+export default function logged_in() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+        if (user) return true;
+        else return false;
+    });
+}
