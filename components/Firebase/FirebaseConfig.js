@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeAuth, signInWithEmailAndPassword, signOut, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore, getDoc, doc } from '@firebase/firestore';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCKR-2O2aH0CgpeFKRplN0HrmgI-7XQEUM',
@@ -11,16 +13,52 @@ const firebaseConfig = {
 };
 
 const firebase_app = initializeApp(firebaseConfig);
-const firebase_auth = getAuth(firebase_app);
+const firebase_auth = initializeAuth(firebase_app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 
 export default async function authenticate_firebase(email, pwd) {
-    await signInWithEmailAndPassword(firebase_auth, email, pwd)
-        .then((userCredential) => {
-            return userCredential.user;
-        })
-        .catch((error) => {
-            const error_code = error.code;
-            const error_msg = error.message;
-            return false;
-        });
+    try {
+        const userCredential = await signInWithEmailAndPassword(firebase_auth, email, pwd);
+        return userCredential.user.email;
+    }
+    catch (error) {
+        //const error_code = error.code;
+        //const error_msg = error.message;
+        //return `${error_code}: ${error_msg}`;
+        return false;
+    }
+}
+
+export async function firebase_logout() {
+    try {
+        await signOut(firebase_auth);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export async function fetch_uid_team() {
+    try {
+        const db = getFirestore(firebase_app);
+        const email = firebase_auth.currentUser.email;
+        const doc_ref = doc(db, 'users', email);
+        const Doc = await getDoc(doc_ref);
+        if (Doc.exists()) return Doc.data().number;
+        else return '';
+    }
+    catch (error) {
+        return 'error';
+    }
+}
+
+export async function user_logged_in() {
+    const user = firebase_auth.currentUser;
+    if (user) {
+        const team_num = await fetch_uid_team();
+        return team_num;
+    } else {
+        return false;
+    }
 }

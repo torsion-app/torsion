@@ -30,4 +30,9 @@ export default GlobalStyles = StyleSheet.create({
         bottom: 0,
         left: 15,
     },
+    BodyText: {
+        fontSize: 20,
+        textAlign: "center",
+        paddingTop: 20,
+    }
 });

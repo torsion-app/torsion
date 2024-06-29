@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen.js';
 import TeamSelectScreen from './screens/TeamSelectScreen.js';
 import SpecificTeamScreen from './screens/SpecificTeamScreen.js';
+import LoginScreen from './screens/LoginScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,10 @@ export default function App() {
                 <Stack.Screen
                     name="Home"
                     component={HomeScreen}
+                />
+                <Stack.Screen
+                    name="Login Page"
+                    component={LoginScreen}
                 />
                 <Stack.Screen
                     name="Team Selection"
