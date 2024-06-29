@@ -67,14 +67,21 @@ export default function TeamSelectScreen({navigation}) {
                         <ScrollingSelect Data={team_names_dd} Placeholder="Select Team" selectedValue={selected_team} onSelect={setSelectedTeam} zindex={1000}/>
                     )}
                     {selected_team_num && (
-                        <Button
-                            title={`${selected_team_num} Team Information`}
-                            style={GlobalStyles.navButton}
-                            containerStyle={GlobalStyles.buttonContainer}
-                                onPress = {() =>
-                                navigation.navigate("Team Info", {selected_team, selected_team_num, selected_comp})
-                            }
-                        />
+                        <View style={{paddingTop: 15}}>
+                            <Button
+                                title={`${selected_team_num} Team Information`}
+                                containerStyle={GlobalStyles.buttonContainer}
+                                    onPress = {() =>
+                                    navigation.navigate("Team Info", {selected_team, selected_team_num, selected_comp})
+                                }
+                            />
+                            <View style={{paddingTop: 20}}/>
+                            <Button
+                                title={`Contact Team ${selected_team_num}`}
+                                containerStyle={GlobalStyles.buttonContainer}
+                                onPress = {sent_request({selected_team_num, selected_comp})}
+                            />
+                        </View>
                     )}
                 </View>
             }

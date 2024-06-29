@@ -1,7 +1,8 @@
-import { View, TextInput, Text, Button } from "react-native";
+import { View, TextInput, Text, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import authenticate_firebase, { } from '../components/Firebase/FirebaseConfig.js';
 import DefaultView from "../components/DefaultView.js";
+import GlobalStyles from "../styles/GlobalStyles.js";
 
 export default function LoginScreen() {
     const [email, setEmail] = useState(null);
@@ -26,22 +27,24 @@ export default function LoginScreen() {
         <DefaultView
             HeaderText={"Login"}
             Content={
-                <View>
+                <View style={styles.container}>
                     <TextInput
-                        placeholder='email'
+                        style={styles.textInput}
+                        placeholder='Email'
                         onChangeText={input => setEmail(input)}
                     />
                     <TextInput
-                        placeholder='pwd'
+                        style={styles.textInput}
+                        placeholder='Password'
                         onChangeText={input => setPwd(input)}
                         secureTextEntry={true}
                     />
                     <Button
-                        title="login"
+                        title="Submit!"
                         onPress={() => setButtonPress(true)}
                     />
                 {login &&
-                    <Text>Logged in!</Text>
+                    <Text style={GlobalStyles.BodyText}>Success! Logged in!</Text>
                 }
                 </View>
             }
@@ -50,3 +53,22 @@ export default function LoginScreen() {
         />
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+    },
+    textInput: {
+        paddingLeft: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        marginBottom: 35,
+        marginTop: -15,
+        fontSize: 18,
+        height: 50,
+        borderColor: "black",
+        borderWidth: 1,
+        borderRadius: 20,
+    },
+});

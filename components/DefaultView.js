@@ -12,6 +12,7 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'space-between',
+            backgroundColor: 'white',
         }}>
             <View style={ [GlobalStyles.headerTextContainer, {height: 50*numberOfLines}] }>
                 <Text 
@@ -26,7 +27,7 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
             <View style={ {flex: 1} }>
                 {Content}
             </View>
-            <View style={ {height: 70, backgroundColor: '#d4d4d4'} }>
+            <View style={ {height: 80} }>
                 <Button
                     style={GlobalStyles.navButton}
                     containerStyle={GlobalStyles.buttonContainer}

@@ -16,10 +16,8 @@ export default function SpecificTeamScreen({route}) {
     
     const [teamEventData, setTeamEventData] = useState([]);
     const url = "https://www.robotevents.com/api/v2/teams/"+selected_team+"/rankings?event%5B%5D="+selected_comp;
-    console.log("url", url);
     useEffect(() => {
         call_re_api(setTeamEventData, null, loading, setLoading, error, setError, url, 'team event data');
-        console.log("teamEventData", teamEventData);
     }, [selected_team]);
 
     const total_played = teamEventData[1]+teamEventData[2]+teamEventData[3];

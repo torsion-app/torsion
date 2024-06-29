@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 
 export default GlobalStyles = StyleSheet.create({
     headerTextContainer: {
-        backgroundColor: '#e6e6e6',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -24,11 +23,6 @@ export default GlobalStyles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 26,
         position: 'relative',
-    },
-    navButton: {
-        position: 'absolute',
-        bottom: 0,
-        left: 15,
     },
     BodyText: {
         fontSize: 20,

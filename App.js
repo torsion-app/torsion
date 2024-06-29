@@ -5,6 +5,7 @@ import HomeScreen from './screens/HomeScreen.js';
 import TeamSelectScreen from './screens/TeamSelectScreen.js';
 import SpecificTeamScreen from './screens/SpecificTeamScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
+import ContactTeamScreen from './screens/ContactTeamScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,10 @@ export default function App() {
                 <Stack.Screen
                     name="Team Info"
                     component={SpecificTeamScreen}
+                />
+                <Stack.Screen
+                    name="Contact Team"
+                    component={ContactTeamScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>
