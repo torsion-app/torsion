@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, signInWithEmailAndPassword, signOut, getReactNativePersistence, getAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, getDoc, doc } from '@firebase/firestore';
+import { getFirestore, getDoc, doc, addDoc, collection } from '@firebase/firestore';
 import { Platform } from 'react-native';
 
 const firebaseConfig = {
@@ -15,13 +15,16 @@ const firebaseConfig = {
 
 const firebase_app = initializeApp(firebaseConfig);
 let firebase_auth = null;
-if (Platform.OS !== 'web') {
-    firebase_auth = initializeAuth(firebase_app, {
-        persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    });
-} else {
-    firebase_auth = getAuth(firebase_app);
-}
+try {
+    if (Platform.OS !== 'web') {
+        firebase_auth = initializeAuth(firebase_app, {
+            persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+        });
+    } else {
+        firebase_auth = getAuth(firebase_app);
+    }
+} catch (error) {}
+const db = getFirestore(firebase_app);
 
 export default async function authenticate_firebase(email, pwd) {
     try {
@@ -47,7 +50,6 @@ export async function firebase_logout() {
 
 export async function fetch_uid_team() {
     try {
-        const db = getFirestore(firebase_app);
         const email = firebase_auth.currentUser.email;
         const doc_ref = doc(db, 'users', email);
         const Doc = await getDoc(doc_ref);
@@ -56,6 +58,25 @@ export async function fetch_uid_team() {
     }
     catch (error) {
         return 'error';
+    }
+}
+
+export async function make_request(recipient_num, comp_id) {
+    console.log("recnum: ", recipient_num);
+    try {
+        const requester = await fetch_uid_team();
+        console.log("requester: ", requester);
+        const ref = await addDoc(collection(db, 'requests'), {
+            requester: requester,
+            requested: recipient_num,
+            event: comp_id,
+            accepted: false,
+        });
+        console.log("ref: ", ref);
+        if (ref) return true;
+    } catch (error) {
+        console.log(":(", error.message);
+        return false;
     }
 }
 

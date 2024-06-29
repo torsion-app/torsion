@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
 import call_re_api from "../components/REApiCall.js";
+import { make_request } from "../components/Firebase/FirebaseConfig.js";
+import GlobalStyles from "../styles/GlobalStyles.js";
 
 export default function TeamSelectScreen({navigation}) {
     const [loading, setLoading] = useState(true);
@@ -18,6 +20,8 @@ export default function TeamSelectScreen({navigation}) {
     const [selected_team, setSelectedTeam] = useState(null);
     const [selected_team_num, setSelectedTeamNum] = useState(null);
     const [team_names_dd, setTeamNamesDd] = useState([]);
+
+    const [request_sent, setRequestSent] = useState(false);
 
     // high stakes = 190 spin up = 173
     // 13765X = 111877
@@ -57,6 +61,16 @@ export default function TeamSelectScreen({navigation}) {
         }
     }, [selected_team]);
 
+    async function alliance_requested() {
+        console.log("1");
+        if (!request_sent) {
+            const res = await make_request(selected_team_num, selected_comp);
+            if (res) {
+                setRequestSent(true);
+            }
+        }
+    }
+
     return (
         <DefaultView
             HeaderText = {"Select Competition and Team"}
@@ -77,10 +91,13 @@ export default function TeamSelectScreen({navigation}) {
                             />
                             <View style={{paddingTop: 20}}/>
                             <Button
-                                title={`Contact Team ${selected_team_num}`}
+                                title={`Request Alliance with ${selected_team_num}`}
                                 containerStyle={GlobalStyles.buttonContainer}
-                                onPress = {sent_request({selected_team_num, selected_comp})}
+                                onPress = {() => alliance_requested()}
                             />
+                            {request_sent &&
+                                <Text style={GlobalStyles.BodyText}>Request Sent!</Text>
+                            }
                         </View>
                     )}
                 </View>
