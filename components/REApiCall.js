@@ -12,10 +12,8 @@ async function get_api_data(setNames, setIds, setLoading, setError, url, info) {
     };
     try {
         const reply = await fetch(url, {headers})
-        console.log("reply: ", reply);
         if (!reply.ok) throw new Error("Error: " + reply.statusText);
         const result = await reply.json();
-        console.log("result: ", result);
         let all_names = null;
         if (info === 'name') {
             all_names = result.data.map(item => item.name);
@@ -27,17 +25,14 @@ async function get_api_data(setNames, setIds, setLoading, setError, url, info) {
             const Result = result.data[0];
             all_names = [Result.rank, Result.wins, Result.losses, Result.ties, Result.wp, Result.ap, Result.sp, Result.high_score, Result.average_points];
         } else if (info === 'single id') {
-            console.log("here");
             all_names = result.data[0].id;
         }
         setNames(all_names);
-        console.log(all_names);
         if (setIds) {
             const all_ids = result.data.map(item => item.id);
             setIds(all_ids);
         }
     } catch (error) {
-        console.log(":(");
         setError(error);
     } finally {
         setLoading(false);

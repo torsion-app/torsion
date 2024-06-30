@@ -1,24 +1,27 @@
-import { useState, useEffect } from 'react';
-import { FlatList, Text, ScrollView, View, ActivityIndicator } from "react-native";
+import { useState, useEffect, forceUpdate } from 'react';
+import { FlatList, Text, ScrollView, View, ActivityIndicator, Pressable } from "react-native";
 import DefaultView from "../components/DefaultView";
 import ScrollingSelect from "../components/ScrollingSelect";
-import { view_sent_requests } from "../components/Firebase/FirebaseConfig";
+import { accept_req, view_received_requests, view_sent_requests } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from '../styles/GlobalStyles';
 import { fetch_uid_team } from '../components/Firebase/FirebaseConfig';
 import call_re_api from '../components/REApiCall';
 
-export default function RequestsScreen() {
+export default function RequestsScreen({navigation}) {
     const [requestsSent, SetRequestsSent] = useState([]);
+    const [requestsGot, SetRequestsGot] = useState([]);
     const [selected_comp, setSelectedComp] = useState(null);
+    const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
-        async function findsent() {
-            console.log("comp: ", selected_comp);
+        async function findreqs() {
             const reply = await view_sent_requests(selected_comp);
             SetRequestsSent(reply);
+            const Reply = await view_received_requests(selected_comp);
+            SetRequestsGot(Reply);
         }
-        if (selected_comp !== null) findsent();
-    }, [selected_comp]);
+        if (selected_comp !== null) findreqs();
+    }, [selected_comp, refresh]);
 
     const [team_id, setTeamId] = useState(null);
     const [comp_names, setCompNames] = useState([]);
@@ -52,19 +55,20 @@ export default function RequestsScreen() {
         })));
     }, [comp_names, comp_ids]);
 
+    async function accepted(id) {
+        const res = await accept_req(id);
+        if (res) setRefresh(refresh+1);
+    }
+
     if (loading) {
         return (
-            <View>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
+            <ActivityIndicator size="large" color="#0000ff" />
         );
     }
 
     if (error) {
         return (
-            <View>
-                <Text>Error: {error.message}</Text>
-            </View>
+            <Text>Error: {error.message}</Text>
         );
     }
 
@@ -91,9 +95,25 @@ export default function RequestsScreen() {
                             keyExtractor={(item) => item.id}
                         />
                         <Text style={{paddingLeft: 15, paddingTop: 35, fontSize: 20, fontWeight: "bold"}}>Requests Recieved:</Text>
+                        <FlatList
+                            scrollEnabled={false}
+                            data={requestsGot}
+                            renderItem={ 
+                                ({item}) => 
+                                    <View>
+                                        <Text style={GlobalStyles.BodyText}>{item.requester}: {item.accepted ? "Accepted!" : "No reply sent"}</Text>
+                                        {!item.accepted &&
+                                            <Pressable onPressOut={() => accepted(item.id)}><Text style={{fontSize: 20, textAlign: "center", color: "blue", textDecorationLine:"underline", paddingTop: 5}}>Accept</Text></Pressable>
+                                        }
+                                    </View>
+                            }
+                            keyExtractor={(item) => item.id}
+                        />
                     </ScrollView>
                 </View>
             }
+            ButtonLink={"Home"}
+            ButtonText={"Home"}
         />
     );
 }

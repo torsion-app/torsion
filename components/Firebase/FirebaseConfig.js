@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, signInWithEmailAndPassword, signOut, getReactNativePersistence, getAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, getDoc, getDocs, doc, addDoc, collection, query, where } from '@firebase/firestore';
+import { getFirestore, getDoc, getDocs, doc, addDoc, collection, query, where, updateDoc } from '@firebase/firestore';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCKR-2O2aH0CgpeFKRplN0HrmgI-7XQEUM',
@@ -62,41 +62,43 @@ export async function fetch_uid_team() {
 }
 
 export async function make_request(recipient_num, comp_id) {
-    console.log("recnum: ", recipient_num);
     try {
         const requester = await fetch_uid_team();
-        console.log("requester: ", requester);
         const ref = await addDoc(collection(db, 'requests'), {
             requester: requester,
             requested: recipient_num,
             event: comp_id,
             accepted: false,
         });
-        console.log("ref: ", ref);
         if (ref) return true;
     } catch (error) {
-        console.log(":(", error.message);
         return false;
     }
 }
 
+export async function accept_req(id) {
+    try {
+        const doc_to_be_updated = doc(db, 'requests', id);
+        await updateDoc(doc_to_be_updated, {
+            accepted: true
+        });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+        
+
 export async function view_sent_requests(comp_id) {
-    console.log(comp_id);
-    console.log("db", db);
-    console.log(firebase_auth);
     try {
         const requester = await fetch_uid_team();
-        console.log("requester: ", requester);
         const Query = query(
             collection(db, 'requests'),
             where('requester', '==', requester),
             where('event', '==', comp_id)
         );
-        console.log("here");
         const response = await getDocs(Query);
-        console.log("response: ", response);
         const results = [];
-        console.log("results: ", results);
         response.forEach((doc) => {
             results.push({
                 id: doc.id,
@@ -104,10 +106,31 @@ export async function view_sent_requests(comp_id) {
                 accepted: doc.data().accepted,
             });
         });
-        console.log("results: ", results);
         return results;
     } catch (error) {
-        console.log("error: ", error.message);
+        return false;
+    }
+}
+
+export async function view_received_requests(comp_id) {
+    try {
+        const requested = await fetch_uid_team();
+        const Query = query(
+            collection(db, 'requests'),
+            where('requested', '==', requested),
+            where('event', '==', comp_id)
+        );
+        const response = await getDocs(Query);
+        const results = [];
+        response.forEach((doc) => {
+            results.push({
+                id: doc.id,
+                requester: doc.data().requester,
+                accepted: doc.data().accepted,
+            });
+        });
+        return results;
+    } catch (error) {
         return false;
     }
 }
