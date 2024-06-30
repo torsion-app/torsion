@@ -28,5 +28,11 @@ export default GlobalStyles = StyleSheet.create({
         fontSize: 20,
         textAlign: "center",
         paddingTop: 20,
-    }
+    },
+    scrollingSelectContainer: {
+        flex: 1,
+        paddingTop: 20,
+        paddingLeft: 20,
+        paddingRight: 10,
+    },
 });

@@ -5,7 +5,7 @@ import DefaultView from '../components/DefaultView.js';
 import { user_logged_in, firebase_logout } from '../components/Firebase/FirebaseConfig.js';
 import GlobalStyles from '../styles/GlobalStyles.js';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
     const [login, setLogin] = useState(false);
     const [team, setTeam] = useState('');
 
@@ -42,7 +42,12 @@ export default function HomeScreen() {
                             />
                             <Text style={GlobalStyles.BodyText}>You are logged in!</Text>
                             <Text style={GlobalStyles.BodyText}>Team: {team}</Text>
-                            <Text style={GlobalStyles.BodyText}>Proceed to selecting a team by pressing the button below!</Text>
+                            <View style={{paddingTop: 30}} />
+                            <Button
+                                title="View All Requests"
+                                onPress={ () => {navigation.navigate("Requests Screen")} }
+                            />
+                            <Text style={GlobalStyles.BodyText}>Proceed to selecting a team by pressing 'Select Team'!</Text>
                         </View>
                     ) : (
                         <Text style={GlobalStyles.BodyText}>You are not logged in yet!</Text>

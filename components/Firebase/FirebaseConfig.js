@@ -1,8 +1,8 @@
+import { Platform } from 'react-native';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, signInWithEmailAndPassword, signOut, getReactNativePersistence, getAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, getDoc, doc, addDoc, collection } from '@firebase/firestore';
-import { Platform } from 'react-native';
+import { getFirestore, getDoc, getDocs, doc, addDoc, collection, query, where } from '@firebase/firestore';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCKR-2O2aH0CgpeFKRplN0HrmgI-7XQEUM',
@@ -76,6 +76,38 @@ export async function make_request(recipient_num, comp_id) {
         if (ref) return true;
     } catch (error) {
         console.log(":(", error.message);
+        return false;
+    }
+}
+
+export async function view_sent_requests(comp_id) {
+    console.log(comp_id);
+    console.log("db", db);
+    console.log(firebase_auth);
+    try {
+        const requester = await fetch_uid_team();
+        console.log("requester: ", requester);
+        const Query = query(
+            collection(db, 'requests'),
+            where('requester', '==', requester),
+            where('event', '==', comp_id)
+        );
+        console.log("here");
+        const response = await getDocs(Query);
+        console.log("response: ", response);
+        const results = [];
+        console.log("results: ", results);
+        response.forEach((doc) => {
+            results.push({
+                id: doc.id,
+                requested: doc.data().requested,
+                accepted: doc.data().accepted,
+            });
+        });
+        console.log("results: ", results);
+        return results;
+    } catch (error) {
+        console.log("error: ", error.message);
         return false;
     }
 }

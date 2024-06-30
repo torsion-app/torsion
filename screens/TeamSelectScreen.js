@@ -1,10 +1,11 @@
-import { View, StyleSheet, Button } from "react-native";
+import { ActivityIndicator, View, StyleSheet, Button, Text } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
 import call_re_api from "../components/REApiCall.js";
 import { make_request } from "../components/Firebase/FirebaseConfig.js";
 import GlobalStyles from "../styles/GlobalStyles.js";
+import { fetch_uid_team } from "../components/Firebase/FirebaseConfig.js";
 
 export default function TeamSelectScreen({navigation}) {
     const [loading, setLoading] = useState(true);
@@ -23,15 +24,27 @@ export default function TeamSelectScreen({navigation}) {
 
     const [request_sent, setRequestSent] = useState(false);
 
+    const [team_id, setTeamId] = useState(null);
+
     // high stakes = 190 spin up = 173
     // 13765X = 111877
-    const team_number = "111877"; //
     const season = "173"; //
-    const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_number+"&season%5B%5D="+season+"&myEvents=false";
 
     useEffect(() => {
-        call_re_api(setCompNames, setCompIds, loading, setLoading, error, setError, comp_url, 'name');
+        async function getteamnum() {
+            const team_number = await fetch_uid_team();
+            const team_id_url = "https://www.robotevents.com/api/v2/teams?number%5B%5D="+team_number+"&myTeams=false";
+            call_re_api(setTeamId, null, loading, setLoading, error, setError, team_id_url, 'single id');
+        }
+        getteamnum();
     }, []);
+
+    useEffect(() => {
+        if (team_id !== null && team_id !== undefined) {
+            const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_id+"&season%5B%5D="+season+"&myEvents=false";
+            call_re_api(setCompNames, setCompIds, loading, setLoading, error, setError, comp_url, 'name');
+        }
+    }, [team_id]);
 
     useEffect(() => {
         setMappedComps(comp_names.map((name, index) => ({
@@ -58,11 +71,11 @@ export default function TeamSelectScreen({navigation}) {
         if (selected_team) {
             const url = 'https://www.robotevents.com/api/v2/teams/'+selected_team;
             call_re_api(setSelectedTeamNum, null, loading, setLoading, error, setError, url, 'single number');
+            setRequestSent(false);
         }
     }, [selected_team]);
 
     async function alliance_requested() {
-        console.log("1");
         if (!request_sent) {
             const res = await make_request(selected_team_num, selected_comp);
             if (res) {
@@ -71,11 +84,27 @@ export default function TeamSelectScreen({navigation}) {
         }
     }
 
+   if (loading) {
+        return (
+            <View>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View>
+                <Text>Error: {error.message}</Text>
+            </View>
+        );
+    }
+
     return (
         <DefaultView
             HeaderText = {"Select Competition and Team"}
             Content = {
-                <View style = {styles.scrollingSelectContainer}>
+                <View style = {GlobalStyles.scrollingSelectContainer}>
                     <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={2000}/>
                     {selected_comp && (
                         <ScrollingSelect Data={team_names_dd} Placeholder="Select Team" selectedValue={selected_team} onSelect={setSelectedTeam} zindex={1000}/>
@@ -107,12 +136,3 @@ export default function TeamSelectScreen({navigation}) {
         />
     );
 }
-
-const styles = StyleSheet.create ({
-    scrollingSelectContainer: {
-        flex: 1,
-        paddingTop: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
-});
