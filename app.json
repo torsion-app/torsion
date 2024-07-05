@@ -13,7 +13,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.drnez.torsion"
+      "bundleIdentifier": "com.drnez.torsion",
+      "buildNumber": "2",
     },
     "android": {
       "adaptiveIcon": {
