@@ -13,18 +13,26 @@ const firebaseConfig = {
     appId: "1:469512816224:web:f0a569945a5a947933a505"
 };
 
-const firebase_app = initializeApp(firebaseConfig);
+let firebase_app = null;
 let firebase_auth = null;
-try {
-    if (Platform.OS !== 'web') {
-        firebase_auth = initializeAuth(firebase_app, {
-            persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-        });
-    } else {
-        firebase_auth = getAuth(firebase_app);
+let db = null;
+
+export async function init_all_firebase() {
+    try {
+        firebase_app = initializeApp(firebaseConfig);
+        db = getFirestore(firebase_app);
+        if (Platform.OS !== 'web') {
+            firebase_auth = initializeAuth(firebase_app, {
+                persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+            });
+        } else {
+            firebase_auth = getAuth(firebase_app);
+        }
+        return true;
+    } catch (error) {
+        return error;
     }
-} catch (error) {}
-const db = getFirestore(firebase_app);
+}
 
 export default async function authenticate_firebase(email, pwd) {
     try {

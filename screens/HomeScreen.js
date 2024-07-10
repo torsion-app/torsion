@@ -2,12 +2,27 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, Button} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import DefaultView from '../components/DefaultView.js';
-import { user_logged_in, firebase_logout } from '../components/Firebase/FirebaseConfig.js';
+import Loading from '../components/Loading.js';
+import { user_logged_in, firebase_logout, init_all_firebase } from '../components/Firebase/FirebaseConfig.js';
 import GlobalStyles from '../styles/GlobalStyles.js';
+import LoginScreen from './LoginScreen.js';
 
 export default function HomeScreen({navigation}) {
     const [login, setLogin] = useState(false);
     const [team, setTeam] = useState('');
+    const [inited, setInited] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function main() {
+            const res = await init_all_firebase();
+            if (res) {
+                setInited(true);
+                setLoading(false);
+            }
+        }
+        main();
+    }, []);
 
     async function logout() {
         const logging_out = await firebase_logout();
@@ -24,14 +39,15 @@ export default function HomeScreen({navigation}) {
                 }
             }
             check_login_state();
-        }, [])
+        }, [inited])
     );
 
-    return (
+    if (loading) return <Loading />
+    else return (
         <DefaultView
             HeaderText = {"Home Screen"}
             Content = {
-                <View>
+                <View style={{flex: 1}}>
                     {login ? (
                         <View style={{
                             paddingTop: 10,
@@ -50,12 +66,15 @@ export default function HomeScreen({navigation}) {
                             <Text style={GlobalStyles.BodyText}>Proceed to selecting a team by pressing 'Select Team'!</Text>
                         </View>
                     ) : (
-                        <Text style={GlobalStyles.BodyText}>You are not logged in yet!</Text>
+                        <View style={{flex: 1}}>
+                            <Text style={GlobalStyles.BodyText}>You are not logged in yet!</Text>
+                            <LoginScreen setLogin={setLogin}/>
+                        </View>
                     )}
                 </View>
             }
-            ButtonLink = {login ? "Team Selection" : "Login Page"}
-            ButtonText = {login ? "Select Team" : "Login"}
+            ButtonLink = {login && "Team Selection"}
+            ButtonText = {login && "Select Team"}
         />
     );
 }

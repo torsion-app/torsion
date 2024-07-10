@@ -1,7 +1,8 @@
-import { ActivityIndicator, View, StyleSheet, Button, Text } from "react-native";
+import { View, Button, Text } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
+import Loading from "../components/Loading.js";
 import call_re_api from "../components/REApiCall.js";
 import { make_request } from "../components/Firebase/FirebaseConfig.js";
 import GlobalStyles from "../styles/GlobalStyles.js";
@@ -84,12 +85,8 @@ export default function TeamSelectScreen({navigation}) {
         }
     }
 
-   if (loading) {
-        return (
-            <View>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
+    if (loading) {
+        <Loading />
     }
 
     if (error) {

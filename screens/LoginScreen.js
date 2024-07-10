@@ -1,14 +1,12 @@
-import { View, TextInput, Text, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import authenticate_firebase, { } from '../components/Firebase/FirebaseConfig.js';
 import DefaultView from "../components/DefaultView.js";
-import GlobalStyles from "../styles/GlobalStyles.js";
 
-export default function LoginScreen() {
+export default function LoginScreen({setLogin}) {
     const [email, setEmail] = useState(null);
     const [pwd, setPwd] = useState(null);
     const [buttonPress, setButtonPress] = useState(false);
-    const [login, setLogin] = useState(false);
 
     useEffect(() => {
         async function authenticate() {
@@ -25,7 +23,6 @@ export default function LoginScreen() {
 
     return (
         <DefaultView
-            HeaderText={"Login"}
             Content={
                 <View style={styles.container}>
                     <TextInput
@@ -39,17 +36,14 @@ export default function LoginScreen() {
                         onChangeText={input => setPwd(input)}
                         secureTextEntry={true}
                     />
-                    <Button
-                        title="Submit!"
-                        onPress={() => setButtonPress(true)}
-                    />
-                {login &&
-                    <Text style={GlobalStyles.BodyText}>Success! Logged in!</Text>
-                }
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title="Submit!"
+                            onPress={() => setButtonPress(true)}
+                        />
+                    </View>
                 </View>
             }
-            ButtonLink={"Home"}
-            ButtonText={"Home"}
         />
     );
 }
@@ -57,18 +51,23 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
+        paddingTop: 70,
     },
     textInput: {
         paddingLeft: 20,
-        marginLeft: 10,
-        marginRight: 10,
+        marginLeft: 15,
+        marginRight: 15,
         marginBottom: 35,
         marginTop: -15,
         fontSize: 18,
         height: 50,
         borderColor: "black",
-        borderWidth: 1,
+        borderWidth: 1.15,
         borderRadius: 20,
+    },
+    buttonContainer: {
+        flexDirection: 'column',
+        position: 'relative',
+        marginTop: 0,
     },
 });

@@ -14,29 +14,35 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
             justifyContent: 'space-between',
             backgroundColor: 'white',
         }}>
-            <View style={ [GlobalStyles.headerTextContainer, {height: 50*numberOfLines}] }>
-                <Text 
-                    style={GlobalStyles.headerText}
-                    onTextLayout={(e) => {
-                        const lines = e.nativeEvent.lines.length;
-                        setNumberOfLines(lines);
-                    }}
-                >{HeaderText}</Text>
-                <StatusBar barStyle="auto" />
-            </View>
-            <View style={ {flex: 1} }>
-                {Content}
-            </View>
-            <View style={ {height: 80} }>
-                <Button
-                    style={GlobalStyles.navButton}
-                    containerStyle={GlobalStyles.buttonContainer}
-                    title={ButtonText+""}
-                    onPress = {() =>
-                        navigation.navigate({name: ButtonLink})
-                    }
-                />
-            </View>
+            { HeaderText &&
+                <View style={ [GlobalStyles.headerTextContainer, {height: 50*numberOfLines}] }>
+                    <Text 
+                        style={GlobalStyles.headerText}
+                        onTextLayout={(e) => {
+                            const lines = e.nativeEvent.lines.length;
+                            setNumberOfLines(lines);
+                        }}
+                    >{HeaderText}</Text>
+                    <StatusBar barStyle="auto" />
+                </View>
+            }
+            { Content &&
+                <View style={ {flex: 1} }>
+                    {Content}
+                </View>
+            }
+            { ButtonLink && ButtonText &&
+                <View style={ {height: 80} }>
+                    <Button
+                        style={GlobalStyles.navButton}
+                        containerStyle={GlobalStyles.buttonContainer}
+                        title={ButtonText+""}
+                        onPress = {() =>
+                            navigation.navigate({name: ButtonLink})
+                        }
+                    />
+                </View>
+            }
         </View>
     );
 }
