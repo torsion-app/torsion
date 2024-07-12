@@ -1,7 +1,9 @@
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 export default function Loading() {
     return (
-        <ActivityIndicator size="large" color="#000000" />
+        <View style={ {flex: 1, justifyContent: 'center'} }>
+            <ActivityIndicator size="large" color="#000000" />
+        </View>
     );
 }

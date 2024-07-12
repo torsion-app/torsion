@@ -1,9 +1,9 @@
 import { View, TextInput, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import authenticate_firebase, { } from '../components/Firebase/FirebaseConfig.js';
-import DefaultView from "../components/DefaultView.js";
+import authenticate_firebase, { } from './components/Firebase/FirebaseConfig.js';
+import DefaultView from "./DefaultView.js";
 
-export default function LoginScreen({setLogin}) {
+export default function LoginScreen({setLogin, setLoading}) {
     const [email, setEmail] = useState(null);
     const [pwd, setPwd] = useState(null);
     const [buttonPress, setButtonPress] = useState(false);
@@ -11,6 +11,7 @@ export default function LoginScreen({setLogin}) {
     useEffect(() => {
         async function authenticate() {
             if (email && pwd && buttonPress) {
+                setLoading(true);
                 const uid = await authenticate_firebase(email, pwd);
                 if (uid !== false) {
                     setLogin(true);

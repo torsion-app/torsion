@@ -1,13 +1,14 @@
-import { useState, useEffect, forceUpdate } from 'react';
-import { FlatList, Text, ScrollView, View, ActivityIndicator, Pressable } from "react-native";
+import { useState, useEffect } from 'react';
+import { FlatList, Text, ScrollView, View, Pressable } from "react-native";
 import DefaultView from "../components/DefaultView";
 import ScrollingSelect from "../components/ScrollingSelect";
+import Loading from '../components/Loading';
 import { accept_req, view_received_requests, view_sent_requests } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from '../styles/GlobalStyles';
 import { fetch_uid_team } from '../components/Firebase/FirebaseConfig';
 import call_re_api from '../components/REApiCall';
 
-export default function RequestsScreen({navigation}) {
+export default function RequestsScreen() {
     const [requestsSent, SetRequestsSent] = useState([]);
     const [requestsGot, SetRequestsGot] = useState([]);
     const [selected_comp, setSelectedComp] = useState(null);
@@ -60,11 +61,7 @@ export default function RequestsScreen({navigation}) {
         if (res) setRefresh(refresh+1);
     }
 
-    if (loading) {
-        return (
-            <ActivityIndicator size="large" color="#0000ff" />
-        );
-    }
+    if (loading) return <Loading />
 
     if (error) {
         return (

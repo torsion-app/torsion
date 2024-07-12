@@ -1,6 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button} from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import DefaultView from '../components/DefaultView.js';
 import Loading from '../components/Loading.js';
 import { user_logged_in, firebase_logout, init_all_firebase } from '../components/Firebase/FirebaseConfig.js';
@@ -13,34 +12,32 @@ export default function HomeScreen({navigation}) {
     const [inited, setInited] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function main() {
-            const res = await init_all_firebase();
-            if (res) {
-                setInited(true);
-                setLoading(false);
-            }
-        }
-        main();
-    }, []);
-
     async function logout() {
         const logging_out = await firebase_logout();
         if (logging_out) setLogin(false);
     }
 
-    useFocusEffect(
-        useCallback(() => {
-            async function check_login_state() {
-                const Team = await user_logged_in();
-                if (Team !== false) {
-                    setTeam(Team);
-                    setLogin(true);
-                }
+    useEffect(() => {
+        async function init() {
+            const res = await init_all_firebase();
+            if (res) {
+                setInited(true);
             }
-            check_login_state();
-        }, [inited])
-    );
+        }
+        init();
+    }, []);
+
+    useEffect(() => {
+        async function check_login_state() {
+            const Team = await user_logged_in();
+            if (Team !== false) {
+                setTeam(Team);
+                setLogin(true);
+            }
+            setLoading(false);
+        }
+        check_login_state();
+    }, [inited, login]);
 
     if (loading) return <Loading />
     else return (
@@ -49,9 +46,7 @@ export default function HomeScreen({navigation}) {
             Content = {
                 <View style={{flex: 1}}>
                     {login ? (
-                        <View style={{
-                            paddingTop: 10,
-                        }}>
+                        <View style={{paddingTop: 10}}>
                             <Button
                                 title="Log Out"
                                 onPress={logout}
@@ -68,7 +63,7 @@ export default function HomeScreen({navigation}) {
                     ) : (
                         <View style={{flex: 1}}>
                             <Text style={GlobalStyles.BodyText}>You are not logged in yet!</Text>
-                            <LoginScreen setLogin={setLogin}/>
+                            <LoginScreen setLogin={setLogin} setLoading={setLoading}/>
                         </View>
                     )}
                 </View>
