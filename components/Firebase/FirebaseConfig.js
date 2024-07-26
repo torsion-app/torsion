@@ -23,14 +23,16 @@ export async function init_all_firebase() {
         db = getFirestore(firebase_app);
         if (Platform.OS !== 'web') {
             firebase_auth = initializeAuth(firebase_app, {
-                persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+                persistence: await getReactNativePersistence(ReactNativeAsyncStorage)
             });
+            console.log("auth: "+firebase_auth.currentUser);
         } else {
             firebase_auth = getAuth(firebase_app);
+            console.log("auth bad: "+firebase_auth.currentUser);
         }
         return true;
     } catch (error) {
-        return error;
+        return false;
     }
 }
 
@@ -145,6 +147,7 @@ export async function view_received_requests(comp_id) {
 
 export async function user_logged_in() {
     const user = firebase_auth.currentUser;
+    console.log("user: "+user);
     if (user) {
         const team_num = await fetch_uid_team();
         return team_num;

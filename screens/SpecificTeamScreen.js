@@ -4,6 +4,7 @@ import { RobotoMono_400Regular } from '@expo-google-fonts/roboto-mono';
 import { useFonts } from 'expo-font';
 import DefaultView from "../components/DefaultView";
 import call_re_api from "../components/REApiCall";
+import Loading from "../components/Loading";
 
 export default function SpecificTeamScreen({route}) {
     let [fontsLoaded] = useFonts({RobotoMono_400Regular});
@@ -17,14 +18,16 @@ export default function SpecificTeamScreen({route}) {
     const [teamEventData, setTeamEventData] = useState([]);
     const url = "https://www.robotevents.com/api/v2/teams/"+selected_team+"/rankings?event%5B%5D="+selected_comp;
     useEffect(() => {
-        call_re_api(setTeamEventData, null, loading, setLoading, error, setError, url, 'team event data');
+        async function callapi() {
+            await call_re_api(setTeamEventData, null, loading, setLoading, error, setError, url, 'team event data');
+        }
+        callapi();
     }, [selected_team]);
 
     const total_played = teamEventData[1]+teamEventData[2]+teamEventData[3];
 
-    if (!fontsLoaded) {
-        return <View />;
-    } else {
+    if (!fontsLoaded || loading) return <Loading />;
+    else {
         return (
             <DefaultView
                 HeaderText={`${selected_team_num} Information`}
@@ -33,7 +36,7 @@ export default function SpecificTeamScreen({route}) {
                         <Text style={styles.DataText}>Rank:         {teamEventData[0]}th</Text>
                         <Text style={styles.DataText}>Wins:         {teamEventData[1]}/{total_played}</Text>
                         {teamEventData[3] > 0 &&
-                            <Text style={styles.DataText}>Ties:         {teamEventData[3]}/{total_played}</Text>
+                        <Text style={styles.DataText}>Ties:         {teamEventData[3]}/{total_played}</Text>
                         }
                         <Text style={styles.DataText}>Losses:       {teamEventData[2]}/{total_played}</Text>
                         <Text style={styles.DataText}>WP:           {teamEventData[4]}</Text>
@@ -43,7 +46,7 @@ export default function SpecificTeamScreen({route}) {
                         <Text style={styles.DataText}>Avg Score:    {teamEventData[8]}</Text>
                     </View>
                 }
-                ButtonLink={"Home"}
+                ButtonLink={"Home Screen"}
                 ButtonText={"Home"}
             />
         );
@@ -62,6 +65,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-start",
         fontFamily: 'RobotoMono_400Regular',
-
+        color: 'white',
     }
 });

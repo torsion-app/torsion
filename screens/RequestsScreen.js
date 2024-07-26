@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { FlatList, Text, ScrollView, View, Pressable } from "react-native";
+import { ActivityIndicator, FlatList, Text, ScrollView, View, Pressable } from "react-native";
 import DefaultView from "../components/DefaultView";
 import ScrollingSelect from "../components/ScrollingSelect";
-import Loading from '../components/Loading';
+import Loading, { OverlayLoading } from '../components/Loading';
 import { accept_req, view_received_requests, view_sent_requests } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from '../styles/GlobalStyles';
 import { fetch_uid_team } from '../components/Firebase/FirebaseConfig';
@@ -16,10 +16,12 @@ export default function RequestsScreen() {
 
     useEffect(() => {
         async function findreqs() {
+            setLoading(true);
             const reply = await view_sent_requests(selected_comp);
             SetRequestsSent(reply);
             const Reply = await view_received_requests(selected_comp);
             SetRequestsGot(Reply);
+            setLoading(false);
         }
         if (selected_comp !== null) findreqs();
     }, [selected_comp, refresh]);
@@ -35,6 +37,7 @@ export default function RequestsScreen() {
 
     useEffect(() => {
         async function getteamnum() {
+            setLoading(true);
             const team_number = await fetch_uid_team();
             const team_id_url = "https://www.robotevents.com/api/v2/teams?number%5B%5D="+team_number+"&myTeams=false";
             call_re_api(setTeamId, null, loading, setLoading, error, setError, team_id_url, 'single id');
@@ -61,8 +64,6 @@ export default function RequestsScreen() {
         if (res) setRefresh(refresh+1);
     }
 
-    if (loading) return <Loading />
-
     if (error) {
         return (
             <Text>Error: {error.message}</Text>
@@ -73,15 +74,18 @@ export default function RequestsScreen() {
         <DefaultView
             HeaderText={"View Alliance Requests"}
             Content={
-                <View>
+                <View style={{flex:1}}>
+                    {loading &&
+                        <OverlayLoading />
+                    }
                     <View style={{paddingBottom: 70, zIndex: 100}}>
-                        <Text style={{paddingLeft: 15, paddingTop: 20, fontSize: 20, fontWeight: "bold"}}>Select Competition:</Text>
+                        <Text style={GlobalStyles.subtitle}>Select Competition:</Text>
                         <View style = {GlobalStyles.scrollingSelectContainer}>
                             <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={100}/>
                         </View>
                     </View>
                     <ScrollView style={{zIndex: 10}}>
-                        <Text style={{paddingLeft: 15, paddingTop: 20, fontSize: 20, fontWeight: "bold"}}>Requests Sent:</Text>
+                        <Text style={GlobalStyles.subtitle}>Requests Sent:</Text>
                         <FlatList
                             scrollEnabled={false}
                             data={requestsSent}
@@ -91,7 +95,7 @@ export default function RequestsScreen() {
                             }
                             keyExtractor={(item) => item.id}
                         />
-                        <Text style={{paddingLeft: 15, paddingTop: 35, fontSize: 20, fontWeight: "bold"}}>Requests Recieved:</Text>
+                        <Text style={GlobalStyles.subtitle}>Requests Recieved:</Text>
                         <FlatList
                             scrollEnabled={false}
                             data={requestsGot}
@@ -100,7 +104,9 @@ export default function RequestsScreen() {
                                     <View>
                                         <Text style={GlobalStyles.BodyText}>{item.requester}: {item.accepted ? "Accepted!" : "No reply sent"}</Text>
                                         {!item.accepted &&
-                                            <Pressable onPressOut={() => accepted(item.id)}><Text style={{fontSize: 20, textAlign: "center", color: "blue", textDecorationLine:"underline", paddingTop: 5}}>Accept</Text></Pressable>
+                                            <Pressable onPressOut={() => accepted(item.id)}>
+                                                <Text style={{fontSize: 20, textAlign: "center", color: "blue", textDecorationLine:"underline", paddingTop: 5}}>Accept</Text>
+                                            </Pressable>
                                         }
                                     </View>
                             }
@@ -109,8 +115,6 @@ export default function RequestsScreen() {
                     </ScrollView>
                 </View>
             }
-            ButtonLink={"Home"}
-            ButtonText={"Home"}
         />
     );
 }

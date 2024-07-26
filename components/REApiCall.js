@@ -1,8 +1,8 @@
 import { RE_KEY } from '@env';
 
-export default function call_re_api(setNames, setIds, loading, setLoading, error, setError, url, info) {
+export default async function call_re_api(setNames, setIds, loading, setLoading, error, setError, url, info) {
     setLoading(true);
-    get_api_data(setNames, setIds, setLoading, setError, url, info);
+    await get_api_data(setNames, setIds, setLoading, setError, url, info);
 }
 
 async function get_api_data(setNames, setIds, setLoading, setError, url, info) {
@@ -36,5 +36,6 @@ async function get_api_data(setNames, setIds, setLoading, setError, url, info) {
         setError(error);
     } finally {
         setLoading(false);
+        return true;
     }
 };

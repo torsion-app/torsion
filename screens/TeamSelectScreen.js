@@ -2,7 +2,7 @@ import { View, Button, Text } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
-import Loading from "../components/Loading.js";
+import Loading, { OverlayLoading } from "../components/Loading.js";
 import call_re_api from "../components/REApiCall.js";
 import { make_request } from "../components/Firebase/FirebaseConfig.js";
 import GlobalStyles from "../styles/GlobalStyles.js";
@@ -10,6 +10,7 @@ import { fetch_uid_team } from "../components/Firebase/FirebaseConfig.js";
 
 export default function TeamSelectScreen({navigation}) {
     const [loading, setLoading] = useState(true);
+    const [initLoading, setInitLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const [comp_names, setCompNames] = useState([]);
@@ -43,7 +44,7 @@ export default function TeamSelectScreen({navigation}) {
     useEffect(() => {
         if (team_id !== null && team_id !== undefined) {
             const comp_url = "https://www.robotevents.com/api/v2/events?team%5B%5D="+team_id+"&season%5B%5D="+season+"&myEvents=false";
-            call_re_api(setCompNames, setCompIds, loading, setLoading, error, setError, comp_url, 'name');
+            call_re_api(setCompNames, setCompIds, loading, setInitLoading, error, setError, comp_url, 'name');
         }
     }, [team_id]);
 
@@ -85,9 +86,7 @@ export default function TeamSelectScreen({navigation}) {
         }
     }
 
-    if (loading) {
-        <Loading />
-    }
+    if (initLoading) return <Loading />
 
     if (error) {
         return (
@@ -102,6 +101,9 @@ export default function TeamSelectScreen({navigation}) {
             HeaderText = {"Select Competition and Team"}
             Content = {
                 <View style = {GlobalStyles.scrollingSelectContainer}>
+                    { loading &&
+                        <OverlayLoading />
+                    }
                     <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={2000}/>
                     {selected_comp && (
                         <ScrollingSelect Data={team_names_dd} Placeholder="Select Team" selectedValue={selected_team} onSelect={setSelectedTeam} zindex={1000}/>
@@ -114,12 +116,14 @@ export default function TeamSelectScreen({navigation}) {
                                     onPress = {() =>
                                     navigation.navigate("Team Info", {selected_team, selected_team_num, selected_comp})
                                 }
+                                color='#93d6fa'
                             />
                             <View style={{paddingTop: 20}}/>
                             <Button
                                 title={`Request Alliance with ${selected_team_num}`}
                                 containerStyle={GlobalStyles.buttonContainer}
                                 onPress = {() => alliance_requested()}
+                                color='#93d6fa'
                             />
                             {request_sent &&
                                 <Text style={GlobalStyles.BodyText}>Request Sent!</Text>
@@ -128,7 +132,7 @@ export default function TeamSelectScreen({navigation}) {
                     )}
                 </View>
             }
-            ButtonLink = {"Home"}
+            ButtonLink = {"Home Screen"}
             ButtonText = {"Home"}
         />
     );

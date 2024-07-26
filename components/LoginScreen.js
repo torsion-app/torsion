@@ -1,6 +1,6 @@
 import { View, TextInput, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import authenticate_firebase, { } from './components/Firebase/FirebaseConfig.js';
+import authenticate_firebase, { } from './Firebase/FirebaseConfig.js';
 import DefaultView from "./DefaultView.js";
 
 export default function LoginScreen({setLogin, setLoading}) {
@@ -29,11 +29,13 @@ export default function LoginScreen({setLogin, setLoading}) {
                     <TextInput
                         style={styles.textInput}
                         placeholder='Email'
+                        placeholderTextColor='white'
                         onChangeText={input => setEmail(input)}
                     />
                     <TextInput
                         style={styles.textInput}
                         placeholder='Password'
+                        placeholderTextColor='white'
                         onChangeText={input => setPwd(input)}
                         secureTextEntry={true}
                     />
@@ -41,6 +43,7 @@ export default function LoginScreen({setLogin, setLoading}) {
                         <Button
                             title="Submit!"
                             onPress={() => setButtonPress(true)}
+                            color='#93d6fa'
                         />
                     </View>
                 </View>
@@ -65,6 +68,8 @@ const styles = StyleSheet.create({
         borderColor: "black",
         borderWidth: 1.15,
         borderRadius: 20,
+        color: 'white',
+        borderColor: '#edebeb',
     },
     buttonContainer: {
         flexDirection: 'column',

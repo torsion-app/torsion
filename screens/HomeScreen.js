@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button} from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DefaultView from '../components/DefaultView.js';
 import Loading from '../components/Loading.js';
 import { user_logged_in, firebase_logout, init_all_firebase } from '../components/Firebase/FirebaseConfig.js';
 import GlobalStyles from '../styles/GlobalStyles.js';
-import LoginScreen from './LoginScreen.js';
+import LoginScreen from '../components/LoginScreen.js';
+import TeamSelectScreen from './TeamSelectScreen.js';
+import SpecificTeamScreen from './SpecificTeamScreen.js';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen() {
     const [login, setLogin] = useState(false);
     const [team, setTeam] = useState('');
     const [inited, setInited] = useState(false);
@@ -20,6 +23,7 @@ export default function HomeScreen({navigation}) {
     useEffect(() => {
         async function init() {
             const res = await init_all_firebase();
+            console.log("res: "+res);
             if (res) {
                 setInited(true);
             }
@@ -29,6 +33,7 @@ export default function HomeScreen({navigation}) {
 
     useEffect(() => {
         async function check_login_state() {
+            console.log("here");
             const Team = await user_logged_in();
             if (Team !== false) {
                 setTeam(Team);
@@ -48,16 +53,13 @@ export default function HomeScreen({navigation}) {
                     {login ? (
                         <View style={{paddingTop: 10}}>
                             <Button
+                                color='#93d6fa'
                                 title="Log Out"
                                 onPress={logout}
                             />
                             <Text style={GlobalStyles.BodyText}>You are logged in!</Text>
                             <Text style={GlobalStyles.BodyText}>Team: {team}</Text>
                             <View style={{paddingTop: 30}} />
-                            <Button
-                                title="View All Requests"
-                                onPress={ () => {navigation.navigate("Requests Screen")} }
-                            />
                             <Text style={GlobalStyles.BodyText}>Proceed to selecting a team by pressing 'Select Team'!</Text>
                         </View>
                     ) : (
@@ -71,5 +73,26 @@ export default function HomeScreen({navigation}) {
             ButtonLink = {login && "Team Selection"}
             ButtonText = {login && "Select Team"}
         />
+    );
+}
+
+export function HomeScreenStack() {
+    const Stack = createNativeStackNavigator();
+
+    return (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen
+                name="Home Screen"
+                component={HomeScreen}
+            />
+            <Stack.Screen
+                name="Team Selection"
+                component={TeamSelectScreen}
+            />
+            <Stack.Screen
+                name="Team Info"
+                component={SpecificTeamScreen}
+            />
+        </Stack.Navigator>
     );
 }
