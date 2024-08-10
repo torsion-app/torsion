@@ -2,7 +2,9 @@ import { Platform } from 'react-native';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, signInWithEmailAndPassword, signOut, getReactNativePersistence, getAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, getDoc, getDocs, doc, addDoc, collection, query, where, updateDoc } from '@firebase/firestore';
+import { or, and, Timestamp, getFirestore, getDoc, getDocs, doc, addDoc, collection, query, where, updateDoc, orderBy } from '@firebase/firestore';
+
+let team_number = null;
 
 const firebaseConfig = {
     apiKey: 'AIzaSyCKR-2O2aH0CgpeFKRplN0HrmgI-7XQEUM',
@@ -25,10 +27,8 @@ export async function init_all_firebase() {
             firebase_auth = initializeAuth(firebase_app, {
                 persistence: await getReactNativePersistence(ReactNativeAsyncStorage)
             });
-            console.log("auth: "+firebase_auth.currentUser);
         } else {
             firebase_auth = getAuth(firebase_app);
-            console.log("auth bad: "+firebase_auth.currentUser);
         }
         return true;
     } catch (error) {
@@ -51,6 +51,7 @@ export default async function authenticate_firebase(email, pwd) {
 
 export async function firebase_logout() {
     try {
+        team_number = null;
         await signOut(firebase_auth);
         return true;
     } catch (error) {
@@ -59,12 +60,16 @@ export async function firebase_logout() {
 }
 
 export async function fetch_uid_team() {
+    if (team_number != null) return team_number;
     try {
         const email = firebase_auth.currentUser.email;
         const doc_ref = doc(db, 'users', email);
         const Doc = await getDoc(doc_ref);
-        if (Doc.exists()) return Doc.data().number;
-        else return '';
+        if (Doc.exists()) {
+            team_number = Doc.data().number;
+            return team_number;
+        }
+        return '';
     }
     catch (error) {
         return 'error';
@@ -84,6 +89,7 @@ export async function make_request(recipient_num, comp_id) {
     } catch (error) {
         return false;
     }
+    return false;
 }
 
 export async function accept_req(id) {
@@ -145,9 +151,55 @@ export async function view_received_requests(comp_id) {
     }
 }
 
+export async function send_msg (recipient_num, content) {
+    try {
+        const requester = await fetch_uid_team();
+        const ref = await addDoc(collection(db, 'messages'), {
+            sender: requester,
+            receiver: recipient_num,
+            content: content,
+            timestamp: Timestamp.fromDate(new Date()),
+        });
+        if (ref) return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export async function view_msgs(other_team) {
+    try {
+        const team = await fetch_uid_team();
+        const Query = query(
+            collection(db, 'messages'),
+            or(
+                and(
+                    where('sender', '==', team),
+                    where('receiver', '==', other_team),
+                ),
+                and(
+                    where('sender', '==', other_team),
+                    where('receiver', '==', team),
+                )
+            ),
+            orderBy('timestamp')
+        );
+        const response = await getDocs(Query);
+        const results = [];
+        response.forEach((doc) => {
+            results.push({
+                id: doc.id,
+                sender: doc.data().sender,
+                content: doc.data().content
+            });
+        });
+        return results;
+    } catch (error) {
+        return false;
+    }
+}
+
 export async function user_logged_in() {
     const user = firebase_auth.currentUser;
-    console.log("user: "+user);
     if (user) {
         const team_num = await fetch_uid_team();
         return team_num;

@@ -51,4 +51,18 @@ export default GlobalStyles = StyleSheet.create({
         fontWeight: "bold",
         color: "#edebeb",
     },
+    textInput: {
+        paddingLeft: 20,
+        marginLeft: 15,
+        marginRight: 15,
+        marginBottom: 35,
+        marginTop: -15,
+        fontSize: 18,
+        height: 50,
+        borderColor: "black",
+        borderWidth: 1.15,
+        borderRadius: 20,
+        color: 'white',
+        borderColor: '#edebeb',
+    },
 });

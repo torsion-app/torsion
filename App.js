@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { HomeScreenStack } from './screens/HomeScreen.js';
 import RequestsScreen from './screens/RequestsScreen.js';
-import ChatScreen from './screens/ChatScreen.js';
+import { ChatScreenStack } from './screens/ChatScreen.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +42,7 @@ export default function App() {
                 />
                 <Tab.Screen
                     name="Messages"
-                    component={ChatScreen}
+                    component={ChatScreenStack}
                 />
             </Tab.Navigator>
         </NavigationContainer>

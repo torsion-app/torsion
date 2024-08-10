@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ActivityIndicator, FlatList, Text, ScrollView, View, Pressable } from "react-native";
+import { FlatList, Text, ScrollView, View, Pressable } from "react-native";
 import DefaultView from "../components/DefaultView";
 import ScrollingSelect from "../components/ScrollingSelect";
-import Loading, { OverlayLoading } from '../components/Loading';
+import { OverlayLoading } from '../components/Loading';
 import { accept_req, view_received_requests, view_sent_requests } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from '../styles/GlobalStyles';
 import { fetch_uid_team } from '../components/Firebase/FirebaseConfig';

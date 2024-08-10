@@ -2,6 +2,7 @@ import { View, TextInput, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import authenticate_firebase, { } from './Firebase/FirebaseConfig.js';
 import DefaultView from "./DefaultView.js";
+import GlobalStyles from "../styles/GlobalStyles.js";
 
 export default function LoginScreen({setLogin, setLoading}) {
     const [email, setEmail] = useState(null);
@@ -27,13 +28,13 @@ export default function LoginScreen({setLogin, setLoading}) {
             Content={
                 <View style={styles.container}>
                     <TextInput
-                        style={styles.textInput}
+                        style={GlobalStyles.textInput}
                         placeholder='Email'
                         placeholderTextColor='white'
                         onChangeText={input => setEmail(input)}
                     />
                     <TextInput
-                        style={styles.textInput}
+                        style={GlobalStyles.textInput}
                         placeholder='Password'
                         placeholderTextColor='white'
                         onChangeText={input => setPwd(input)}
@@ -56,20 +57,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 70,
-    },
-    textInput: {
-        paddingLeft: 20,
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 35,
-        marginTop: -15,
-        fontSize: 18,
-        height: 50,
-        borderColor: "black",
-        borderWidth: 1.15,
-        borderRadius: 20,
-        color: 'white',
-        borderColor: '#edebeb',
     },
     buttonContainer: {
         flexDirection: 'column',
