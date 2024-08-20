@@ -1,12 +1,31 @@
-import { View, TextInput } from "react-native";
+import { View, TextInput, Text, FlatList, Pressable } from "react-native";
 import DefaultView from "../components/DefaultView";
 import TeamChatScreen from "./TeamChatScreen";
 import GlobalStyles from "../styles/GlobalStyles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { view_unreads } from "../components/Firebase/FirebaseConfig";
 
 export default function ChatScreen({navigation}) {
     const [search, setSearch] = useState("");
+    const [check, setCheck] = useState(0);
+    const [unreads, setUnreads] = useState(null);
+
+    useEffect(() => {
+        async function set_unreads() {
+            const teams = await view_unreads();
+            setUnreads(teams);
+        }
+        set_unreads();
+    }, [check]);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setCheck(value => value+1);
+        }, 2000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     return (
         <DefaultView
             HeaderText = {"All Chats"}
@@ -14,12 +33,40 @@ export default function ChatScreen({navigation}) {
                 <View style={{flex: 1}}>
                     <View style={{padding: 20}} />
                     <TextInput
+                        selectionColor={'white'}
+                        ref={this.textInput}
                         style={GlobalStyles.textInput}
                         placeholder='Team Number:'
                         placeholderTextColor='white'
                         onChangeText={input => setSearch(input)}
                         returnKeyType="google"
-                        onSubmitEditing={() => navigation.navigate("Team Chat", {search})}
+                        value={search}
+                        onSubmitEditing={() => {
+                            try {
+                                const capitalised = search.substring(0, search.length-2) + search[search.length-1].toUpperCase;
+                                if (capitalised.length <= 6) setSearch(capitalised);
+                            }
+                            catch (error) {}
+                            if ( (search[0] >= '0' && search[0] <= '9') && (search[search.length-1] >= 'A' && search[search.length-1] <= 'Z') ) {
+                                navigation.navigate("Team Chat", {search});
+                                setSearch('');
+                            }
+                        }}
+                    />
+                    <FlatList
+                        data={unreads}
+                        keyExtractor={({item}) => item}
+                        renderItem={({item}) =>
+                            <Pressable
+                                onPress={() => {
+                                    const search = item;
+                                    navigation.navigate("Team Chat", {search});
+                                }}
+                            >
+                                <Text style={{fontWeight: 'bold', fontSize: 18, color: 'white', alignSelf: 'center', padding: 10}}>{item} - unread</Text>
+                            </Pressable>
+                        }
+                        ItemSeparatorComponent={<View style={{height: 1, backgroundColor: '#aaa', marginHorizontal: 30}} />}
                     />
                 </View>
             }

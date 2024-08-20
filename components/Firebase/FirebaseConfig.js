@@ -16,22 +16,25 @@ const firebaseConfig = {
 };
 
 let firebase_app = null;
-let firebase_auth = null;
+export let firebase_auth = null;
 let db = null;
+let inited = false;
 
 export async function init_all_firebase() {
     try {
         firebase_app = initializeApp(firebaseConfig);
-        db = getFirestore(firebase_app);
         if (Platform.OS !== 'web') {
             firebase_auth = initializeAuth(firebase_app, {
-                persistence: await getReactNativePersistence(ReactNativeAsyncStorage)
+                persistence: getReactNativePersistence(ReactNativeAsyncStorage)
             });
         } else {
             firebase_auth = getAuth(firebase_app);
         }
+        db = getFirestore(firebase_app);
+        inited = true;
         return true;
     } catch (error) {
+        console.log("Error: "+error);
         return false;
     }
 }
@@ -160,7 +163,13 @@ export async function send_msg (recipient_num, content) {
             content: content,
             timestamp: Timestamp.fromDate(new Date()),
         });
-        if (ref) return true;
+        if (!ref) return false;
+        const ref_2 = await addDoc(collection(db, 'seen'), {
+            from: requester,
+            to: recipient_num,
+            read: false
+        });
+        if (ref_2) return true;
     } catch (error) {
         return false;
     }
@@ -192,13 +201,55 @@ export async function view_msgs(other_team) {
                 content: doc.data().content
             });
         });
+
+        const seen_query = query(
+            collection(db, 'seen'),
+            where('from', '==', other_team),
+            where('to', '==', team),
+            where('read', '==', false),
+        );
+        const response_2 = await getDocs(seen_query);
+        const results_2 = [];
+        response_2.forEach((doc) => results_2.push(doc.id));
+        for (id of results_2) {
+            const doc_to_be_updated = doc(db, 'seen', id);
+            await updateDoc(doc_to_be_updated, {
+                read: true
+            });
+        }
+
         return results;
     } catch (error) {
         return false;
     }
 }
 
+export async function view_unreads() {
+    try {
+        const team = await fetch_uid_team();
+        const Query = query(
+            collection(db, 'seen'),
+            and(
+                where('to', '==', team),
+                where('read', '==', false),
+            )
+        );
+        const response = await getDocs(Query);
+        const results = [];
+        response.forEach((doc) => {
+            results.push(doc.data().from);
+        });
+        const unreads = [...new Set(results)];
+        return unreads;
+    }
+    catch (error) {
+        return false;
+    }
+}
+
 export async function user_logged_in() {
+    console.log("fauth: " + JSON.stringify(firebase_auth));
+    console.log("fauth user: " + firebase_auth.currentUser);
     const user = firebase_auth.currentUser;
     if (user) {
         const team_num = await fetch_uid_team();

@@ -5,7 +5,7 @@ import GlobalStyles from "../styles/GlobalStyles";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 
-export default function TeamChatScreen({navigation, route}) {
+export default function TeamChatScreen({route}) {
     const [msgs, setMsgs] = useState(null);
     const [send, setSend] = useState("");
     const [sent, setSent] = useState(0);
@@ -21,8 +21,8 @@ export default function TeamChatScreen({navigation, route}) {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setSent(sent+1);
-        }, 5000);
+            setSent(value => value+1);
+        }, 2000);
         return () => clearInterval(intervalId);
     }, []);
 

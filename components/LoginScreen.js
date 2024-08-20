@@ -28,12 +28,16 @@ export default function LoginScreen({setLogin, setLoading}) {
             Content={
                 <View style={styles.container}>
                     <TextInput
+                        selectionColor={'white'}
+                        autoComplete={'email'}
                         style={GlobalStyles.textInput}
                         placeholder='Email'
                         placeholderTextColor='white'
                         onChangeText={input => setEmail(input)}
                     />
                     <TextInput
+                        selectionColor={'white'}
+                        autoComplete={'current-password'}
                         style={GlobalStyles.textInput}
                         placeholder='Password'
                         placeholderTextColor='white'

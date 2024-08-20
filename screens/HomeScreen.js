@@ -3,11 +3,12 @@ import { View, Text, Button} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DefaultView from '../components/DefaultView.js';
 import Loading from '../components/Loading.js';
-import { user_logged_in, firebase_logout, init_all_firebase } from '../components/Firebase/FirebaseConfig.js';
+import { user_logged_in, firebase_logout, init_all_firebase, firebase_auth, fetch_uid_team } from '../components/Firebase/FirebaseConfig.js';
 import GlobalStyles from '../styles/GlobalStyles.js';
 import LoginScreen from '../components/LoginScreen.js';
 import TeamSelectScreen from './TeamSelectScreen.js';
 import SpecificTeamScreen from './SpecificTeamScreen.js';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function HomeScreen() {
     const [login, setLogin] = useState(false);
@@ -19,6 +20,22 @@ export default function HomeScreen() {
         const logging_out = await firebase_logout();
         if (logging_out) setLogin(false);
     }
+
+    useEffect(() => {
+        if (firebase_auth !== null) {
+            onAuthStateChanged(firebase_auth, (user) => {
+                async function set_things() {
+                    if (user) {
+                        setTeam(await fetch_uid_team());
+                        setInited(true);
+                        setLogin(true);
+                        setLoading(false);
+                    }
+                }
+                set_things();
+            });
+        }
+    }, [team]);
 
     useEffect(() => {
         async function init() {
@@ -33,7 +50,7 @@ export default function HomeScreen() {
 
     useEffect(() => {
         async function check_login_state() {
-            console.log("here");
+            console.log("checking login state");
             const Team = await user_logged_in();
             if (Team !== false) {
                 setTeam(Team);
@@ -41,7 +58,7 @@ export default function HomeScreen() {
             }
             setLoading(false);
         }
-        check_login_state();
+        if (inited) check_login_state();
     }, [inited, login]);
 
     if (loading) return <Loading />
