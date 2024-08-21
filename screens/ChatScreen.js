@@ -53,6 +53,7 @@ export default function ChatScreen({navigation}) {
                             }
                         }}
                     />
+                    <Text style={{fontWeight:'bold', fontSize:24, color:'white', paddingLeft:20}}>Unreads:</Text>
                     <FlatList
                         data={unreads}
                         keyExtractor={({item}) => item}

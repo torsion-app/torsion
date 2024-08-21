@@ -15,6 +15,7 @@ export default function HomeScreen() {
     const [team, setTeam] = useState('');
     const [inited, setInited] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [checkLogin, setCheckLogin] = useState(true);
 
     async function logout() {
         const logging_out = await firebase_logout();
@@ -50,7 +51,6 @@ export default function HomeScreen() {
 
     useEffect(() => {
         async function check_login_state() {
-            console.log("checking login state");
             const Team = await user_logged_in();
             if (Team !== false) {
                 setTeam(Team);
@@ -59,7 +59,16 @@ export default function HomeScreen() {
             setLoading(false);
         }
         if (inited) check_login_state();
-    }, [inited, login]);
+    }, [inited, login, checkLogin]);
+
+    useEffect(() => {
+        if (!login) {
+            const intervalId = setInterval(() => {
+                setCheckLogin(value => value+1);
+            }, 1000);
+            return () => clearInterval(intervalId);
+        }
+    }, []);
 
     if (loading) return <Loading />
     else return (
