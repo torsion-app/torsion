@@ -7,6 +7,6 @@ alliance partners, and this app greatly simplifies this process by allowing team
 likelihood of teams being rejected during the alliance selection period) and by allowing teams to communicate with a chat function.
 
 TestFlight Link: https://testflight.apple.com/join/TOGLa8wj
-|___ Test Accounts: 1. test@test.com - Test1234, 2. other@test.com - Other1234
+Test Accounts: 1. test@test.com - Test1234, 2. other@test.com - Other1234
 
 Demo Video:
