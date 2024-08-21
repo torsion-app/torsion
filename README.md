@@ -9,4 +9,4 @@ likelihood of teams being rejected during the alliance selection period) and by 
 TestFlight Link: https://testflight.apple.com/join/TOGLa8wj  
 Test Accounts: 1. test@test.com - Test1234, 2. other@test.com - Other1234
 
-Demo Video:
+Demo Video: https://youtu.be/6jI0irJvOYA?si=hG_g0TTXLPkSJa4c
