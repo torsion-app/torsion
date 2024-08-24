@@ -3,7 +3,6 @@ import { useState } from "react";
 import GlobalStyles from '../styles/GlobalStyles.js';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from "expo-linear-gradient";
 
 export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonText }) {
     const [numberOfLines, setNumberOfLines] = useState(1);
@@ -14,13 +13,8 @@ export default function DefaultView({ HeaderText, Content, ButtonLink, ButtonTex
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'space-between',
+            backgroundColor: '#737373'
         }}>
-            <LinearGradient
-                style={GlobalStyles.background}
-                colors={['#737373', '#919191']}
-                start={{x: 0, y:0}}
-                locations={[0.3, 0.7]}
-            />
             { HeaderText &&
                 <View style={ [GlobalStyles.headerTextContainer, {height: 50*numberOfLines}] }>
                     <Text 
