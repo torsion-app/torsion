@@ -1,5 +1,7 @@
 import { RE_KEY } from '@env';
 
+console.log(RE_KEY);
+
 export default async function call_re_api(setNames, setIds, loading, setLoading, error, setError, url, info) {
     setLoading(true);
     await get_api_data(setNames, setIds, setLoading, setError, url, info);

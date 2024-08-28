@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import authenticate_firebase, { } from './Firebase/FirebaseConfig.js';
 import DefaultView from "./DefaultView.js";
 import GlobalStyles from "../styles/GlobalStyles.js";
+import DefaultButton from "./DefaultButton.js";
 
 export default function LoginScreen({setLogin, setLoading}) {
     const [email, setEmail] = useState(null);
@@ -57,11 +58,10 @@ export default function LoginScreen({setLogin, setLoading}) {
                         secureTextEntry={true}
                     />
                     <View style={styles.buttonContainer}>
-                        <Pressable onPress={() => setButtonPress(true)} style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}>
-                            <View style={{backgroundColor: '#0a84ff', alignItems: 'center', justifyContent: 'center', marginHorizontal:20, borderRadius: 20}}>
-                                <Text style={{fontSize: 20, color: 'white', padding: 10}}>Login!</Text>
-                            </View>
-                        </Pressable>
+                        <DefaultButton
+                            text={"Login!"}
+                            touched={() => setButtonPress(true)}
+                        />
                     </View>
                 </View>
             }

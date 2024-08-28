@@ -98,7 +98,7 @@ export default function TeamSelectScreen({navigation}) {
 
     return (
         <DefaultView
-            HeaderText = {"Select Competition and Team"}
+            HeaderText = {"Select Team"}
             Content = {
                 <View style = {GlobalStyles.scrollingSelectContainer}>
                     { loading &&
