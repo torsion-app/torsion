@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { View, FlatList, Text, TextInput, KeyboardAvoidingView } from "react-native";
 import { send_msg, view_msgs } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from "../styles/GlobalStyles";
-import { StatusBar } from "expo-status-bar";
 
 export default function TeamChatScreen({route}) {
     const [msgs, setMsgs] = useState(null);
@@ -30,12 +29,12 @@ export default function TeamChatScreen({route}) {
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'flex-end',
+            backgroundColor: '#121212',
         }}>
-            <View style={ [GlobalStyles.headerTextContainer, {height: 50}] }>
+            <View style={[GlobalStyles.headerTextContainer, {height: 50}] }>
                 <Text 
                     style={GlobalStyles.headerText}
                 >Chat with {route.params.search}</Text>
-                <StatusBar barStyle="auto" />
             </View>
             <KeyboardAvoidingView style={{flex:1, justifyContent: 'flex-end'}} behavior="padding" keyboardVerticalOffset={90}>
                 <FlatList
