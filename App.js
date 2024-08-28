@@ -18,17 +18,16 @@ export default function App() {
         async function check_login_state() {
             const Team = await user_logged_in();
             if (Team !== false) setLogin(true);
+            else setLogin(false);
         }
         check_login_state();
     }, [checkLogin]);
 
     useEffect(() => {
-        if (!login) {
-            const intervalId = setInterval(() => {
-                setCheckLogin(value => value+1);
-            }, 1000);
-            return () => clearInterval(intervalId);
-        }
+        const intervalId = setInterval(() => {
+            setCheckLogin(value => value+1);
+        }, 1500);
+        return () => clearInterval(intervalId);
     }, []);
 
     return (

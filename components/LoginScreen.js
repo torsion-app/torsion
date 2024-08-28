@@ -7,6 +7,7 @@ import GlobalStyles from "../styles/GlobalStyles.js";
 export default function LoginScreen({setLogin, setLoading}) {
     const [email, setEmail] = useState(null);
     const [pwd, setPwd] = useState(null);
+    const [invalid, setInvalid] = useState(false);
     const [buttonPress, setButtonPress] = useState(false);
 
     useEffect(() => {
@@ -16,6 +17,8 @@ export default function LoginScreen({setLogin, setLoading}) {
                 const uid = await authenticate_firebase(email, pwd);
                 if (uid !== false) {
                     setLogin(true);
+                } else {
+                    setInvalid(true);
                 }
             }
             if (buttonPress) setButtonPress(false);
@@ -27,8 +30,15 @@ export default function LoginScreen({setLogin, setLoading}) {
         <DefaultView
             Content={
                 <View style={styles.container}>
-                    <View style={{margin: -10}} />
-                    <Text style={{fontSize: 20, color: 'white'}}>Incorrect Email or Password!</Text>
+                    <View style={{margin: -20}} />
+                    <Text style={{fontSize: 20, color: 'white', textAlign: 'center'}}>
+                        { invalid ?
+                            "Incorrect Email and/or Password!"
+                            :
+                            "You are not logged in yet!"
+                        }
+                    </Text>
+                    <View style={{padding: 25}} />
                     <TextInput
                         selectionColor={'white'}
                         autoComplete={'email'}
@@ -47,7 +57,7 @@ export default function LoginScreen({setLogin, setLoading}) {
                         secureTextEntry={true}
                     />
                     <View style={styles.buttonContainer}>
-                        <Pressable onPress={() => setButtonPress(true)}>
+                        <Pressable onPress={() => setButtonPress(true)} style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}>
                             <View style={{backgroundColor: '#0a84ff', alignItems: 'center', justifyContent: 'center', marginHorizontal:20, borderRadius: 20}}>
                                 <Text style={{fontSize: 20, color: 'white', padding: 10}}>Login!</Text>
                             </View>

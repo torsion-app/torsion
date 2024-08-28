@@ -91,7 +91,7 @@ export default function TeamSelectScreen({navigation}) {
     if (error) {
         return (
             <View>
-                <Text>Error: {error.message}</Text>
+                <Text style={GlobalStyles.BodyText}>Error: {error.message}</Text>
             </View>
         );
     }

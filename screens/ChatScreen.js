@@ -15,7 +15,6 @@ export default function ChatScreen({navigation}) {
         async function set_unreads() {
             const teams = await view_unreads();
             setUnreads(teams);
-            console.log(unreads);
         }
         set_unreads();
     }, [check]);

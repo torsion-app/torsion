@@ -76,16 +76,16 @@ export default function HomeScreen() {
             Content = {
                 <View style={{flex: 1}}>
                     {login ? (
-                        <View style={{paddingTop: 10}}>
-                            <Text style={GlobalStyles.BodyText}>You are logged in!</Text>
-                            <Text style={GlobalStyles.BodyText}>Team: {team}</Text>
+                        <View style={{paddingTop: 30}}>
+                            <View style={{backgroundColor: '#0a84ff', alignItems: 'center', justifyContent: 'center', marginHorizontal:20, borderRadius: 20}}>
+                                <Text style={{fontSize: 20, color: 'white', paddingTop: 15, paddingBottom: 5}}>You are logged in!</Text>
+                                <Text style={{fontSize: 20, color: 'white', paddingBottom: 15}}>Team: {team}</Text>
+                            </View>
                             <View style={{paddingTop: 30}} />
                             <Text style={GlobalStyles.BodyText}>Proceed to selecting a team by pressing 'Select Team'!</Text>
                         </View>
                     ) : (
                         <View style={{flex: 1}}>
-                            <View style={{padding: 5}} />
-                            <Text style={GlobalStyles.BodyText}>You are not logged in yet!</Text>
                             <LoginScreen setLogin={setLogin} setLoading={setLoading}/>
                         </View>
                     )}

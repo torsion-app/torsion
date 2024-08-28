@@ -20,26 +20,24 @@ export default function DefaultView({ HeaderText, logout, Content, ButtonLink, B
                         style={GlobalStyles.headerText}
                     >{HeaderText}</Text>
                     { logout &&
-                        <Pressable onPress={firebase_logout} style={{paddingRight: 20}}>
+                        <Pressable onPress={firebase_logout} style={({pressed}) => [{opacity: pressed ? 0.5 : 1, paddingRight: 20}]}>
                             <Ionicons style={{justifyContent: 'center'}} name={"log-out-outline"} size={35} color={'gray'} />
                         </Pressable>
                     }
                 </View>
             }
             { Content &&
-                <View style={ {flex: 1} }>
+                <View style={{flex: 1}}>
                     {Content}
                 </View>
             }
             { ButtonLink && ButtonText &&
-                <View style={ {height: 80} }>
-                    <Button
-                        title={ButtonText+""}
-                        onPress = {() =>
-                            navigation.navigate({name: ButtonLink})
-                        }
-                        color='#93d6fa'
-                    />
+                <View style={{height: 80}}>
+                    <Pressable onPress={() => navigation.navigate({name: ButtonLink})} style={({pressed}) => [{opacity: pressed ? 0.5 : 1}]}>
+                        <View style={{backgroundColor: '#0a84ff', alignItems: 'center', justifyContent: 'center', marginHorizontal:20, borderRadius: 20}}>
+                            <Text style={{fontSize: 20, color: 'white', padding: 10}}>{ButtonText}</Text>
+                        </View>
+                    </Pressable>
                 </View>
             }
         </View>

@@ -66,7 +66,7 @@ export default function RequestsScreen() {
 
     if (error) {
         return (
-            <Text>Error: {error.message}</Text>
+            <Text style={GlobalStyles.BodyText}>Error: {error.message}</Text>
         );
     }
 
