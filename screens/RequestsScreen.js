@@ -72,13 +72,13 @@ export default function RequestsScreen() {
 
     return (
         <DefaultView
-            HeaderText={"View Alliance Requests"}
+            HeaderText={"View All Requests"}
             Content={
                 <View style={{flex:1}}>
                     {loading &&
                         <OverlayLoading />
                     }
-                    <View style={{paddingBottom: 70, zIndex: 100}}>
+                    <View style={{marginTop: -10, paddingBottom: 70, zIndex: 100}}>
                         <Text style={GlobalStyles.subtitle}>Select Competition:</Text>
                         <View style = {GlobalStyles.scrollingSelectContainer}>
                             <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={100}/>

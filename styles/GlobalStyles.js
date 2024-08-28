@@ -2,7 +2,8 @@ import { StyleSheet } from "react-native";
 
 export default GlobalStyles = StyleSheet.create({
     headerTextContainer: {
-        alignItems: 'center',
+        alignItems: 'left',
+        paddingLeft: 15,
         justifyContent: 'center',
     },
     buttonContainer: {
@@ -21,15 +22,15 @@ export default GlobalStyles = StyleSheet.create({
     headerText: {
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 26,
+        fontSize: 32,
         position: 'relative',
-        color: '#edebeb',
+        color: 'white',
     },
     BodyText: {
         fontSize: 20,
         textAlign: 'center',
         paddingTop: 20,
-        color: '#edebeb',
+        color: 'white',
     },
     scrollingSelectContainer: {
         flex: 1,

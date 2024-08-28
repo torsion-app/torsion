@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { DarkTheme } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { HomeScreenStack } from './screens/HomeScreen.js';
 import RequestsScreen from './screens/RequestsScreen.js';
@@ -31,7 +32,9 @@ export default function App() {
     }, []);
 
     return (
-        <NavigationContainer>
+        <NavigationContainer
+            theme={DarkTheme}
+        >
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {

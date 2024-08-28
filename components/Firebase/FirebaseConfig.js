@@ -34,7 +34,6 @@ export async function init_all_firebase() {
         inited = true;
         return true;
     } catch (error) {
-        console.log("Error: "+error);
         return false;
     }
 }
@@ -236,9 +235,12 @@ export async function view_unreads() {
         );
         const response = await getDocs(Query);
         const results = [];
+        let empty = true;
         response.forEach((doc) => {
+            empty = false;
             results.push(doc.data().from);
         });
+        if (empty) return false;
         const unreads = [...new Set(results)];
         return unreads;
     }
@@ -248,8 +250,6 @@ export async function view_unreads() {
 }
 
 export async function user_logged_in() {
-    console.log("fauth: " + JSON.stringify(firebase_auth));
-    console.log("fauth user: " + firebase_auth.currentUser);
     const user = firebase_auth.currentUser;
     if (user) {
         const team_num = await fetch_uid_team();

@@ -15,6 +15,7 @@ export default function ChatScreen({navigation}) {
         async function set_unreads() {
             const teams = await view_unreads();
             setUnreads(teams);
+            console.log(unreads);
         }
         set_unreads();
     }, [check]);
@@ -54,6 +55,9 @@ export default function ChatScreen({navigation}) {
                         }}
                     />
                     <Text style={{fontWeight:'bold', fontSize:24, color:'white', paddingLeft:20}}>Unreads:</Text>
+                    {!unreads &&
+                        <Text style={{fontSize: 18, color: 'white', padding: 25, alignSelf: 'center'}}>No new messages!</Text>
+                    }
                     <FlatList
                         data={unreads}
                         keyExtractor={({item}) => item}

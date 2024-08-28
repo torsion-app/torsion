@@ -1,4 +1,4 @@
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Text, StyleSheet, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import authenticate_firebase, { } from './Firebase/FirebaseConfig.js';
 import DefaultView from "./DefaultView.js";
@@ -27,6 +27,8 @@ export default function LoginScreen({setLogin, setLoading}) {
         <DefaultView
             Content={
                 <View style={styles.container}>
+                    <View style={{margin: -10}} />
+                    <Text style={{fontSize: 20, color: 'white'}}>Incorrect Email or Password!</Text>
                     <TextInput
                         selectionColor={'white'}
                         autoComplete={'email'}
@@ -45,11 +47,11 @@ export default function LoginScreen({setLogin, setLoading}) {
                         secureTextEntry={true}
                     />
                     <View style={styles.buttonContainer}>
-                        <Button
-                            title="Submit!"
-                            onPress={() => setButtonPress(true)}
-                            color='#93d6fa'
-                        />
+                        <Pressable onPress={() => setButtonPress(true)}>
+                            <View style={{backgroundColor: '#0a84ff', alignItems: 'center', justifyContent: 'center', marginHorizontal:20, borderRadius: 20}}>
+                                <Text style={{fontSize: 20, color: 'white', padding: 10}}>Login!</Text>
+                            </View>
+                        </Pressable>
                     </View>
                 </View>
             }

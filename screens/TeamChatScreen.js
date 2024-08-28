@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { View, FlatList, Text, TextInput, KeyboardAvoidingView } from "react-native";
 import { send_msg, view_msgs } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from "../styles/GlobalStyles";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 
 export default function TeamChatScreen({route}) {
@@ -32,12 +31,6 @@ export default function TeamChatScreen({route}) {
             flexDirection: 'column',
             justifyContent: 'flex-end',
         }}>
-            <LinearGradient
-                style={GlobalStyles.background}
-                colors={['#737373', '#919191']}
-                start={{x: 0, y:0}}
-                locations={[0.3, 0.7]}
-            />
             <View style={ [GlobalStyles.headerTextContainer, {height: 50}] }>
                 <Text 
                     style={GlobalStyles.headerText}
