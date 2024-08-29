@@ -1,32 +1,34 @@
 import React, { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 export default function ScrollingSelect ({Data, Placeholder, selectedValue, onSelect, zindex}) {
     const [Open, setOpen] = useState(false);
     return (
-        <DropDownPicker
-            style={styles.dropdown}
-            items={Data}
-            open={Open}
-            setOpen={setOpen}
-            placeholder={Placeholder}
-            value={selectedValue}
-            setValue={onSelect}
-            zIndex={zindex}
-            itemKey="value"
-        />
+        <View style={{alignItems: 'center'}}>
+            <DropDownPicker
+                style={styles.dropdown}
+                items={Data}
+                open={Open}
+                setOpen={setOpen}
+                placeholder={Placeholder}
+                value={selectedValue}
+                setValue={onSelect}
+                zIndex={zindex}
+                itemKey="value"
+                key="value"
+            />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     dropdown: {
         height: 50,
-        width: 220,
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 15,
         marginBottom: 25,
     },
 });

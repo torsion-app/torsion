@@ -36,7 +36,7 @@ export default GlobalStyles = StyleSheet.create({
         flex: 1,
         paddingTop: 20,
         paddingLeft: 20,
-        paddingRight: 10,
+        paddingRight: 20,
     },
     background: {
         position: 'absolute',

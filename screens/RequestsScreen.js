@@ -78,7 +78,7 @@ export default function RequestsScreen() {
                     {loading &&
                         <OverlayLoading />
                     }
-                    <View style={{marginTop: -10, paddingBottom: 60, zIndex: 100}}>
+                    <View style={{marginTop: -10, paddingBottom: 45, zIndex: 100}}>
                         <Text style={GlobalStyles.subtitle}>Select Competition:</Text>
                         <View style = {GlobalStyles.scrollingSelectContainer}>
                             <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={100}/>

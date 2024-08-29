@@ -1,4 +1,4 @@
-import { View, Button, Text } from "react-native";
+import { View, Button, Text, Alert } from "react-native";
 import { useEffect, useState } from 'react';
 import ScrollingSelect from '../components/ScrollingSelect.js';
 import DefaultView from "../components/DefaultView.js";
@@ -7,6 +7,8 @@ import call_re_api from "../components/REApiCall.js";
 import { make_request } from "../components/Firebase/FirebaseConfig.js";
 import GlobalStyles from "../styles/GlobalStyles.js";
 import { fetch_uid_team } from "../components/Firebase/FirebaseConfig.js";
+import SpecificTeamScreen from "./SpecificTeamScreen.js";
+import DefaultButton from "../components/DefaultButton.js";
 
 export default function TeamSelectScreen({navigation}) {
     const [loading, setLoading] = useState(true);
@@ -59,6 +61,7 @@ export default function TeamSelectScreen({navigation}) {
         if (selected_comp) {
             const team_url = "https://www.robotevents.com/api/v2/teams?event%5B%5D="+selected_comp+"&myTeams=false&per_page=250";
             call_re_api(setTeamNames, setTeamIds, loading, setLoading, error, setError, team_url, 'number');
+            setSelectedTeam(null);
         }
     }, [selected_comp]);
 
@@ -82,6 +85,11 @@ export default function TeamSelectScreen({navigation}) {
             const res = await make_request(selected_team_num, selected_comp);
             if (res) {
                 setRequestSent(true);
+                Alert.alert("Request Sent", `Alliance request has been sent to team ${selected_team_num}!`, [
+                    {
+                        text: 'OK'
+                    }
+                ]);
             }
         }
     }
@@ -104,36 +112,36 @@ export default function TeamSelectScreen({navigation}) {
                     { loading &&
                         <OverlayLoading />
                     }
-                    <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={2000}/>
-                    {selected_comp && (
-                        <ScrollingSelect Data={team_names_dd} Placeholder="Select Team" selectedValue={selected_team} onSelect={setSelectedTeam} zindex={1000}/>
-                    )}
-                    {selected_team_num && (
-                        <View style={{paddingTop: 15}}>
-                            <Button
-                                title={`${selected_team_num} Team Information`}
-                                containerStyle={GlobalStyles.buttonContainer}
-                                    onPress = {() =>
-                                    navigation.navigate("Team Info", {selected_team, selected_team_num, selected_comp})
-                                }
-                                color='#93d6fa'
-                            />
-                            <View style={{paddingTop: 20}}/>
-                            <Button
-                                title={`Request Alliance with ${selected_team_num}`}
-                                containerStyle={GlobalStyles.buttonContainer}
-                                onPress = {() => alliance_requested()}
-                                color='#93d6fa'
-                            />
-                            {request_sent &&
-                                <Text style={GlobalStyles.BodyText}>Request Sent!</Text>
-                            }
+                    <View style={{zIndex: 2000}}>
+                        <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={2000}/>
+                    </View>
+                    {selected_comp &&
+                        <View style={{zIndex: 1000}}>
+                            <ScrollingSelect Data={team_names_dd} Placeholder="Select Team" selectedValue={selected_team} onSelect={setSelectedTeam} zindex={1000}/>
                         </View>
-                    )}
+                    }
+                    {selected_team &&
+                        <View style={{flex:1}}>
+                            <SpecificTeamScreen selected_team={selected_team} selected_team_num={selected_team_num} selected_comp={selected_comp} loading={loading} setLoading={setLoading}/>
+                            <View style={{padding: 9}} />
+                            <DefaultButton
+                                text={`Chat with ${selected_team_num}`}
+                                touched = {() => {
+                                    const search = selected_team_num;
+                                    navigation.navigate("Team Chat", {search});
+                                }}
+                            />
+                            <View style={{padding: 7}} />
+                            <View style={{height: 70}}>
+                                <DefaultButton
+                                    text={`Request Alliance with ${selected_team_num}`}
+                                    touched = {() => alliance_requested()}
+                                />
+                            </View>
+                        </View>
+                    }
                 </View>
             }
-            ButtonLink = {"Home Screen"}
-            ButtonText = {"Home"}
         />
     );
 }

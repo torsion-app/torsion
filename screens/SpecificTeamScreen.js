@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { RobotoMono_400Regular } from '@expo-google-fonts/roboto-mono';
 import { useFonts } from 'expo-font';
 import DefaultView from "../components/DefaultView";
 import call_re_api from "../components/REApiCall";
 import Loading from "../components/Loading";
 
-export default function SpecificTeamScreen({route}) {
+export default function SpecificTeamScreen({selected_team, selected_team_num, selected_comp, loading, setLoading}) {
     let [fontsLoaded] = useFonts({RobotoMono_400Regular});
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const selected_team = route.params.selected_team;
-    const selected_comp = route.params.selected_comp;
-    const selected_team_num = route.params.selected_team_num;
-    
     const [teamEventData, setTeamEventData] = useState([]);
     const url = "https://www.robotevents.com/api/v2/teams/"+selected_team+"/rankings?event%5B%5D="+selected_comp;
     useEffect(() => {
@@ -24,47 +19,85 @@ export default function SpecificTeamScreen({route}) {
         callapi();
     }, [selected_team]);
 
-    const total_played = teamEventData[1]+teamEventData[2]+teamEventData[3];
+    useEffect(() => {
+        if (fontsLoaded) setLoading(false);
+    }, [fontsLoaded]);
 
-    if (!fontsLoaded || loading) return <Loading />;
-    else {
-        return (
-            <DefaultView
-                HeaderText={`${selected_team_num} Information`}
-                Content={
-                    <View style={styles.DataTextContainer}>
-                        <Text style={styles.DataText}>Rank:         {teamEventData[0]}th</Text>
-                        <Text style={styles.DataText}>Wins:         {teamEventData[1]}/{total_played}</Text>
-                        {teamEventData[3] > 0 &&
-                        <Text style={styles.DataText}>Ties:         {teamEventData[3]}/{total_played}</Text>
-                        }
-                        <Text style={styles.DataText}>Losses:       {teamEventData[2]}/{total_played}</Text>
-                        <Text style={styles.DataText}>WP:           {teamEventData[4]}</Text>
-                        <Text style={styles.DataText}>AP:           {teamEventData[5]}</Text>
-                        <Text style={styles.DataText}>SP:           {teamEventData[6]}</Text>
-                        <Text style={styles.DataText}>High Score:   {teamEventData[7]}</Text>
-                        <Text style={styles.DataText}>Avg Score:    {teamEventData[8]}</Text>
-                    </View>
-                }
-                ButtonLink={"Home Screen"}
-                ButtonText={"Home"}
-            />
-        );
-    }
+    const total_played = teamEventData[1]+teamEventData[2]+teamEventData[3];
+    const last_digit_of_rank = teamEventData[0] % 10;
+
+    return (
+        <View style={styles.DataTextContainer}>
+            <Text style={styles.DataTextTitle}>{selected_team_num} Statistics:</Text>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>Rank:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[0]}{last_digit_of_rank === 1 ? "st" : last_digit_of_rank === 2 ? "nd" : last_digit_of_rank === 3 ? "rd" : "th"}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>Wins:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[1]}/{total_played}</Text>
+            </View>
+            {teamEventData[3] > 0 &&
+                <View style={styles.DataRow}>
+                    <Text style={styles.DataTextLabel}>Ties:</Text>
+                    <Text style={styles.DataTextValue}>{teamEventData[3]}/{total_played}</Text>
+                </View>
+            }
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>Losses:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[2]}/{total_played}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>WP:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[4]}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>AP:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[5]}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>SP:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[6]}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>High Score:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[7]}</Text>
+            </View>
+            <View style={styles.DataRow}>
+                <Text style={styles.DataTextLabel}>Avg Score:</Text>
+                <Text style={styles.DataTextValue}>{teamEventData[8]}</Text>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
     DataTextContainer: {
         flex: 1,
-        paddingHorizontal: 30,
-        paddingVertical: 20,
+        paddingTop: 15,
+        paddingLeft: 15,
+        paddingRight: 25,
+        backgroundColor: '#505050',
+        borderRadius: 20,
+        alignSelf: 'center',
+        width: Dimensions.get("window").width - 40,
     },
-    DataText: {
-        fontSize: 25,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        fontFamily: 'RobotoMono_400Regular',
+    DataTextTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
         color: 'white',
-    }
+        paddingBottom: 5,
+    },
+    DataRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    DataTextLabel: {
+        fontSize: 23,
+        color: 'white',
+    },
+    DataTextValue: {
+        fontSize: 23,
+        color: '#dddddd',
+    },
 });
