@@ -73,6 +73,7 @@ export default function HomeScreen() {
         <DefaultView
             HeaderText = {"Home Screen"}
             logout = {login && true}
+            setLogin = {setLogin}
             Content = {
                 <View style={{flex: 1}}>
                     {login ? (

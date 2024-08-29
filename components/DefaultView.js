@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from "@expo/vector-icons";
 import { firebase_logout } from "./Firebase/FirebaseConfig.js";
 
-export default function DefaultView({ HeaderText, logout, Content, ButtonLink, ButtonText }) {
+export default function DefaultView({ HeaderText, logout, setLogin, Content, ButtonLink, ButtonText }) {
     const navigation = useNavigation();
 
     return (
@@ -20,7 +20,18 @@ export default function DefaultView({ HeaderText, logout, Content, ButtonLink, B
                         style={GlobalStyles.headerText}
                     >{HeaderText}</Text>
                     { logout &&
-                        <Pressable onPress={firebase_logout} style={({pressed}) => [{opacity: pressed ? 0.5 : 1, paddingRight: 20}]}>
+                        <Pressable
+                            onPress={() => {
+                                firebase_logout();
+                                setLogin(false);
+                            }}
+                            style={({pressed}) => [
+                                {
+                                    opacity: pressed ? 0.5 : 1,
+                                    paddingRight: 20
+                                }
+                            ]}
+                        >
                             <Ionicons style={{justifyContent: 'center'}} name={"log-out-outline"} size={35} color={'gray'} />
                         </Pressable>
                     }

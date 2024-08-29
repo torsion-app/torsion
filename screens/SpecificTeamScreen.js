@@ -33,36 +33,46 @@ export default function SpecificTeamScreen({selected_team, selected_team_num, se
                 <Text style={styles.DataTextLabel}>Rank:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[0]}{last_digit_of_rank === 1 ? "st" : last_digit_of_rank === 2 ? "nd" : last_digit_of_rank === 3 ? "rd" : "th"}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>Wins:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[1]}/{total_played}</Text>
             </View>
+            <View style={styles.Seperator} />
             {teamEventData[3] > 0 &&
-                <View style={styles.DataRow}>
-                    <Text style={styles.DataTextLabel}>Ties:</Text>
-                    <Text style={styles.DataTextValue}>{teamEventData[3]}/{total_played}</Text>
-                </View>
+                <>
+                    <View style={styles.DataRow}>
+                        <Text style={styles.DataTextLabel}>Ties:</Text>
+                        <Text style={styles.DataTextValue}>{teamEventData[3]}/{total_played}</Text>
+                    </View>
+                    <View style={styles.Seperator} />
+                </>
             }
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>Losses:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[2]}/{total_played}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>WP:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[4]}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>AP:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[5]}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>SP:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[6]}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>High Score:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[7]}</Text>
             </View>
+            <View style={styles.Seperator} />
             <View style={styles.DataRow}>
                 <Text style={styles.DataTextLabel}>Avg Score:</Text>
                 <Text style={styles.DataTextValue}>{teamEventData[8]}</Text>
@@ -93,11 +103,16 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     DataTextLabel: {
-        fontSize: 23,
+        fontSize: 22,
         color: 'white',
     },
     DataTextValue: {
-        fontSize: 23,
+        fontSize: 22,
         color: '#dddddd',
+    },
+    Seperator: {
+        height: 1,
+        backgroundColor: '#999999',
+        marginVertical: 0.5,
     },
 });
