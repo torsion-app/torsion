@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { View, FlatList, Text, TextInput, KeyboardAvoidingView } from "react-native";
+import { View, FlatList, Text, TextInput, KeyboardAvoidingView, Pressable } from "react-native";
 import { send_msg, view_msgs } from "../components/Firebase/FirebaseConfig";
 import GlobalStyles from "../styles/GlobalStyles";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function TeamChatScreen({route}) {
+export default function TeamChatScreen({navigation, route}) {
     const [msgs, setMsgs] = useState(null);
     const [send, setSend] = useState("");
     const [sent, setSent] = useState(0);
@@ -31,10 +32,13 @@ export default function TeamChatScreen({route}) {
             justifyContent: 'flex-end',
             backgroundColor: '#121212',
         }}>
-            <View style={[GlobalStyles.headerTextContainer, {height: 50}] }>
+            <View style={[GlobalStyles.headerTextContainer, {flexDirection:'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 5}, {height: 50}] }>
                 <Text 
                     style={GlobalStyles.headerText}
                 >Chat with {route.params.search}</Text>
+                <Pressable onPress={() => navigation.navigate("Main Screen")} style={({pressed}) => [{opacity: pressed ? 0.5 : 1, paddingRight: 20}]}>
+                    <Ionicons style={{justifyContent: 'center'}} name={"arrow-back-outline"} size={35} color={'gray'} />
+                </Pressable>
             </View>
             <KeyboardAvoidingView style={{flex:1, justifyContent: 'flex-end'}} behavior="padding" keyboardVerticalOffset={90}>
                 <FlatList
