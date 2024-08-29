@@ -26,14 +26,13 @@ export default function App() {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCheckLogin(value => value+1);
+            console.log("App");
         }, 1500);
         return () => clearInterval(intervalId);
     }, []);
 
     return (
-        <NavigationContainer
-            theme={DarkTheme}
-        >
+        <NavigationContainer theme={DarkTheme}>
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ focused, color, size }) => {

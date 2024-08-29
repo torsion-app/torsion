@@ -22,7 +22,8 @@ export default function ChatScreen({navigation}) {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCheck(value => value+1);
-        }, 2000);
+            console.log("all chats");
+        }, 10000);
         return () => clearInterval(intervalId);
     }, []);
 

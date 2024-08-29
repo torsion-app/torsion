@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FlatList, Text, ScrollView, View, Pressable } from "react-native";
+import { FlatList, Text, ScrollView, View, Pressable, StyleSheet, Dimensions } from "react-native";
 import DefaultView from "../components/DefaultView";
 import ScrollingSelect from "../components/ScrollingSelect";
 import { OverlayLoading } from '../components/Loading';
@@ -84,37 +84,83 @@ export default function RequestsScreen() {
                             <ScrollingSelect Data={mappedComps} Placeholder="Select Competition" selectedValue={selected_comp} onSelect={setSelectedComp} zindex={100}/>
                         </View>
                     </View>
+                    <View style={{padding: 15}} />
                     <ScrollView style={{zIndex: 10}}>
-                        <Text style={GlobalStyles.subtitle}>Requests Sent:</Text>
-                        <FlatList
-                            scrollEnabled={false}
-                            data={requestsSent}
-                            renderItem={ 
-                                ({item}) => 
-                                    <Text style={GlobalStyles.BodyText}>{item.requested}: {item.accepted ? "Accepted!" : "No reply yet"}</Text>
-                            }
-                            keyExtractor={(item) => item.id}
-                        />
-                        <Text style={GlobalStyles.subtitle}>Requests Recieved:</Text>
-                        <FlatList
-                            scrollEnabled={false}
-                            data={requestsGot}
-                            renderItem={ 
-                                ({item}) => 
-                                    <View>
-                                        <Text style={GlobalStyles.BodyText}>{item.requester}: {item.accepted ? "Accepted!" : "No reply sent"}</Text>
-                                        {!item.accepted &&
-                                            <Pressable onPressOut={() => accepted(item.id)}>
-                                                <Text style={{fontSize: 20, textAlign: "center", color: "blue", textDecorationLine:"underline", paddingTop: 5}}>Accept</Text>
-                                            </Pressable>
-                                        }
-                                    </View>
-                            }
-                            keyExtractor={(item) => item.id}
-                        />
+                        <View style={styles.DataTextContainer}>
+                            <Text style={styles.DataTextTitle}>Requests Sent:</Text>
+                            <FlatList
+                                scrollEnabled={false}
+                                data={requestsSent}
+                                renderItem={ 
+                                    ({item}) => (
+                                        <View style={styles.DataRow}>
+                                            <Text style={styles.DataTextLabel}>{item.requested}</Text>
+                                            <Text style={styles.DataTextValue}>{item.accepted ? "Accepted!" : "No reply yet"}</Text>
+                                        </View>
+                                    )
+                                }
+                                keyExtractor={(item) => item.id}
+                            />
+                        </View>
+                        <View style={{padding: 10}} />
+                        <View style={styles.DataTextContainer}>
+                            <Text style={styles.DataTextTitle}>Requests Received:</Text>
+                            <FlatList
+                                scrollEnabled={false}
+                                data={requestsGot}
+                                renderItem={ 
+                                    ({item}) => (
+                                        <View style={styles.DataRow}>
+                                            <Text style={styles.DataTextLabel}>{item.requester}</Text>
+                                            {item.accepted ?
+                                                <Text style={styles.DataTextValue}>Accepted!</Text>
+                                            :
+                                                <Pressable onPressOut={() => accepted(item.id)}>
+                                                    <Text style={[styles.DataTextValue, {textDecorationLine:"underline"}]}>Accept?</Text>
+                                                </Pressable>
+                                            }
+                                        </View>
+                                    )
+                                }
+                                keyExtractor={(item) => item.id}
+                            />
+                        </View>
                     </ScrollView>
                 </View>
             }
         />
     );
 }
+
+const styles = StyleSheet.create({
+    DataTextContainer: {
+        flex: 1,
+        paddingTop: 12,
+        paddingBottom: 12,
+        paddingLeft: 15,
+        paddingRight: 25,
+        backgroundColor: '#505050',
+        borderRadius: 20,
+        alignSelf: 'center',
+        width: Dimensions.get("window").width - 30,
+    },
+    DataTextTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+        paddingBottom: 5,
+    },
+    DataRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 3,
+    },
+    DataTextLabel: {
+        fontSize: 22,
+        color: 'white',
+    },
+    DataTextValue: {
+        fontSize: 22,
+        color: '#dddddd',
+    },
+});

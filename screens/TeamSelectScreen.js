@@ -128,7 +128,7 @@ export default function TeamSelectScreen({navigation}) {
                                 text={`Chat with ${selected_team_num}`}
                                 touched = {() => {
                                     const search = selected_team_num;
-                                    navigation.navigate("Team Chat", {search});
+                                    navigation.navigate("Messages", {screen: "Team Chat", params: {search}});
                                 }}
                             />
                             <View style={{padding: 7}} />

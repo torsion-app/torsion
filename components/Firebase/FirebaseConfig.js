@@ -63,6 +63,7 @@ export async function firebase_logout() {
 
 export async function fetch_uid_team() {
     if (team_number != null) return team_number;
+    console.log("firebasing...");
     try {
         const email = firebase_auth.currentUser.email;
         const doc_ref = doc(db, 'users', email);
@@ -225,7 +226,9 @@ export async function view_msgs(other_team) {
 
 export async function view_unreads() {
     try {
-        const team = await fetch_uid_team();
+        let team;
+        if (team_number !== null) team = team_number;
+        else team = await fetch_uid_team();
         const Query = query(
             collection(db, 'seen'),
             and(

@@ -9,7 +9,6 @@ import LoginScreen from '../components/LoginScreen.js';
 import TeamSelectScreen from './TeamSelectScreen.js';
 import SpecificTeamScreen from './SpecificTeamScreen.js';
 import { onAuthStateChanged } from 'firebase/auth';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
     const [login, setLogin] = useState(false);
@@ -63,6 +62,7 @@ export default function HomeScreen() {
         if (!login) {
             const intervalId = setInterval(() => {
                 setCheckLogin(value => value+1);
+                console.log("home");
             }, 1000);
             return () => clearInterval(intervalId);
         }

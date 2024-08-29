@@ -21,7 +21,7 @@ export default function TeamChatScreen({navigation, route}) {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setSent(value => value+1);
-        }, 2000);
+        }, 4000);
         return () => clearInterval(intervalId);
     }, []);
 
@@ -46,12 +46,7 @@ export default function TeamChatScreen({navigation, route}) {
                     scrollEnabled={true}
                     data={msgs}
                     renderItem={ 
-                        ({item}) => <Text style={{
-                            fontSize: 20,
-                            paddingTop: 20,
-                            paddingLeft: 20,
-                            color: '#edebeb',
-                        }}>{item.sender}: {item.content}</Text>
+                        ({item}) => <ChatBubble sender={item.sender} content={item.content} other_team={route.params.search} />
                     }
                     keyExtractor={(item) => item.id}
                     onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false }) }
@@ -66,13 +61,32 @@ export default function TeamChatScreen({navigation, route}) {
                     returnKeyType="send"
                     value={send}
                     onSubmitEditing={() => {
-                        setSend("");
-                        setSent(sent+1);
-                        send_msg(route.params.search, send);
+                        if (send !== '') {
+                            setSend("");
+                            setSent(sent+1);
+                            send_msg(route.params.search, send);
+                        }
                     }}
                     clearButtonMode="always"
                 />
             </KeyboardAvoidingView>
+        </View>
+    );
+}
+
+function ChatBubble({sender, content, other_team}) {
+    if (sender === other_team) return (
+        <View style={{flex: 1, backgroundColor: 'green', marginLeft: 15, maxWidth: 260, borderRadius: 20, marginVertical: 4, alignSelf: 'flex-start'}}>
+            <Text
+                style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}
+            >{content}</Text>
+        </View>
+    );
+    else return (
+        <View style={{flex: 1, backgroundColor: '#0a84ff', marginRight: 15, maxWidth: 260, borderRadius: 20, marginVertical: 4, alignSelf: 'flex-end'}}>
+            <Text
+                style={{fontSize: 18, paddingVertical: 10, paddingHorizontal: 15, color: 'white'}}
+            >{content}</Text>
         </View>
     );
 }
